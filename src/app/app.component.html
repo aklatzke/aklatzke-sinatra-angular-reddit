@@ -1,7 +1,12 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-2 pt-2">
-      <h5>Welcome {{activeUser}}</h5>
+      <h5>Welcome {{activeUser}}</h5> 
+      <app-subreddit-search
+        [setActive]="passableGetSpecificSubreddit"
+      ></app-subreddit-search>
+      <hr /> 
+      <h6>Your Subreddits</h6>
       <ul class='nav nav-pills flex-column'>
           <a class='nav-link' 
               *ngFor="let subs of subreddits" 
@@ -11,9 +16,15 @@
             {{ subs.data.display_name }}
           </a>
       </ul>
-    </div>
+    </div> 
     <div class="col-10 pl-5 pr-5 pt-2" *ngIf="activeSub">
-      <app-active-subreddit [activeSub]="activeSub" [activeSubName]="activeSubName"></app-active-subreddit>
+      <app-active-subreddit 
+        [activeSub]="activeSub" 
+        [activeSubName]="activeSubName"
+        [isSubscribed]="subscribedToActive"
+        [refresh]="passableRefresh"
+      >
+      </app-active-subreddit>
     </div>    
   </div>
 </div> 

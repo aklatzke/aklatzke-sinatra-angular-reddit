@@ -1,11 +1,23 @@
 require 'redd'
 require 'yaml'
 
-def redditRequest(url)
+def redditGet(url, options = {})
     reddit = request.env['redd.session']
 
     if reddit
-        response = reddit.client.get(url)
+        response = reddit.client.get(url, options)
+
+        response.raw_body
+    else
+        false
+    end
+end
+
+def redditPost(url, options = {})
+    reddit = request.env['redd.session']
+
+    if reddit
+        response = reddit.client.post(url, options)
 
         response.raw_body
     else
@@ -45,4 +57,23 @@ get "/api/subreddits/:name/hot" do
     else
         json false
     end
+end
+
+get "/api/subreddits/search/:name" do
+    json redditGet( "/api/search_reddit_names?query=#{params['name']}" )
+end
+
+get "/api/subreddits/subscribe/:name" do
+    json redditPost( "/api/subscribe", {
+        :action => "sub",
+        :sr_name => params['name'],
+        :skip_initial_defaults => true
+    } )
+end
+
+get "/api/subreddits/unsubscribe/:name" do
+    json redditPost( "/api/subscribe", {
+        :action => "unsub",
+        :sr_name => params['name']
+    } )
 end

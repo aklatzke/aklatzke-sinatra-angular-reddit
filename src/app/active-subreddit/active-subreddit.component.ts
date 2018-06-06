@@ -10,12 +10,14 @@ import { RedditService } from "../reddit.service";
 export class ActiveSubredditComponent implements OnInit {
   @Input() activeSub : {
     children : {
-      data: Object[],
-      type: String
+      data: object[],
+      type: string
     }[]
   };
 
-  @Input() activeSubName: String;
+  @Input() refresh;
+  @Input() activeSubName: string;
+  @Input() isSubscribed: boolean;
 
   constructor(
     private redditService: RedditService
@@ -23,5 +25,13 @@ export class ActiveSubredditComponent implements OnInit {
 
   ngOnInit() {
     console.log(this.activeSub)
+  }
+
+  subscribe(){
+    this.redditService.subscribe(this.activeSubName).subscribe(response => this.refresh())
+  }
+
+  unsubscribe(){
+    this.redditService.unsubscribe(this.activeSubName).subscribe(response => this.refresh())
   }
 }

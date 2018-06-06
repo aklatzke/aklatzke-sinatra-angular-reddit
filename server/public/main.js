@@ -41,7 +41,7 @@ module.exports = ".thread-list{\n    padding-left: 0px;\n    list-style-type: no
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h4>r/{{ activeSubName }}</h4>\n\n<ul class=\"thread-list\" *ngIf=\"activeSub.children\">\n  <li *ngFor=\"let thread of activeSub.children\">\n    <app-thread [data]=\"thread.data\"></app-thread>\n  </li>\n</ul> \n \n"
+module.exports = "<h4>r/{{ activeSubName }}</h4>\n<hr />\n<div class='subredditActions'>\n  <button *ngIf=\"isSubscribed\" class='btn btn-primary btn-sm' (click)=\"unsubscribe()\">Unsubscribe</button>\n  <button *ngIf=\"! isSubscribed\" class='btn btn-primary btn-sm' (click)=\"subscribe()\">Subscribe</button>\n</div>\n<hr />\n\n<ul class=\"thread-list\" *ngIf=\"activeSub.children\">\n  <li *ngFor=\"let thread of activeSub.children\">\n    <app-thread [data]=\"thread.data\"></app-thread>\n  </li>\n</ul> \n \n "
 
 /***/ }),
 
@@ -75,14 +75,30 @@ var ActiveSubredditComponent = /** @class */ (function () {
     ActiveSubredditComponent.prototype.ngOnInit = function () {
         console.log(this.activeSub);
     };
+    ActiveSubredditComponent.prototype.subscribe = function () {
+        var _this = this;
+        this.redditService.subscribe(this.activeSubName).subscribe(function (response) { return _this.refresh(); });
+    };
+    ActiveSubredditComponent.prototype.unsubscribe = function () {
+        var _this = this;
+        this.redditService.unsubscribe(this.activeSubName).subscribe(function (response) { return _this.refresh(); });
+    };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
         __metadata("design:type", Object)
     ], ActiveSubredditComponent.prototype, "activeSub", void 0);
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Object)
+    ], ActiveSubredditComponent.prototype, "refresh", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
         __metadata("design:type", String)
     ], ActiveSubredditComponent.prototype, "activeSubName", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Boolean)
+    ], ActiveSubredditComponent.prototype, "isSubscribed", void 0);
     ActiveSubredditComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-active-subreddit',
@@ -116,7 +132,7 @@ module.exports = ".nav-link{\n    cursor: pointer;\n}"
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container-fluid\">\n  <div class=\"row\">\n    <div class=\"col-2 pt-2\">\n      <h5>Welcome {{activeUser}}</h5>\n      <ul class='nav nav-pills flex-column'>\n          <a class='nav-link' \n              *ngFor=\"let subs of subreddits\" \n              (click)=\"getSpecificSubreddit(subs.data.display_name)\"\n              [class.active]=\"subs.data.display_name === activeSubName\"\n          >\n            {{ subs.data.display_name }}\n          </a>\n      </ul>\n    </div>\n    <div class=\"col-10 pl-5 pr-5 pt-2\" *ngIf=\"activeSub\">\n      <app-active-subreddit [activeSub]=\"activeSub\" [activeSubName]=\"activeSubName\"></app-active-subreddit>\n    </div>    \n  </div>\n</div> "
+module.exports = "<div class=\"container-fluid\">\n  <div class=\"row\">\n    <div class=\"col-2 pt-2\">\n      <h5>Welcome {{activeUser}}</h5> \n      <app-subreddit-search\n        [setActive]=\"passableGetSpecificSubreddit\"\n      ></app-subreddit-search>\n      <hr /> \n      <h6>Your Subreddits</h6>\n      <ul class='nav nav-pills flex-column'>\n          <a class='nav-link' \n              *ngFor=\"let subs of subreddits\" \n              (click)=\"getSpecificSubreddit(subs.data.display_name)\"\n              [class.active]=\"subs.data.display_name === activeSubName\"\n          >\n            {{ subs.data.display_name }}\n          </a>\n      </ul>\n    </div> \n    <div class=\"col-10 pl-5 pr-5 pt-2\" *ngIf=\"activeSub\">\n      <app-active-subreddit \n        [activeSub]=\"activeSub\" \n        [activeSubName]=\"activeSubName\"\n        [isSubscribed]=\"subscribedToActive\"\n        [refresh]=\"passableRefresh\"\n      >\n      </app-active-subreddit>\n    </div>    \n  </div>\n</div> "
 
 /***/ }),
 
@@ -151,16 +167,26 @@ var AppComponent = /** @class */ (function () {
         this.redditService = redditService;
         this.title = 'app';
         this.activeUser = null;
-        this.subreddits = [];
+        this.subreddits = [{
+                type: String,
+                data: {
+                    display_name: String
+                }
+            }];
+        this.subscribedToActive = false;
     }
     AppComponent.prototype.ngOnInit = function () {
         this.getUser();
         this.getSubbredits();
+        this.passableGetSpecificSubreddit = this.getSpecificSubreddit.bind(this);
+        this.passableRefresh = this.getSubbredits.bind(this);
     };
     AppComponent.prototype.getSubbredits = function () {
         var _this = this;
         this.redditService.getSubbreddits().subscribe(function (response) {
-            _this.subreddits = JSON.parse(response.toString()).data.children;
+            _this.subreddits = JSON.parse(response.toString()).data.children.sort(function (a, b) {
+                return a.data.display_name.toLowerCase() > b.data.display_name.toLowerCase();
+            });
         });
     };
     AppComponent.prototype.getSpecificSubreddit = function (name) {
@@ -169,6 +195,7 @@ var AppComponent = /** @class */ (function () {
         this.activeSub = null;
         this.redditService.getSubredditDefault(name).subscribe(function (response) {
             _this.activeSub = JSON.parse(response.toString()).data;
+            _this.subscribedToActive = _this.subreddits.some(function (sub) { return sub.data.display_name === name; });
         });
     };
     AppComponent.prototype.getUser = function () {
@@ -206,9 +233,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
-/* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./app.component */ "./src/app/app.component.ts");
-/* harmony import */ var _active_subreddit_active_subreddit_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./active-subreddit/active-subreddit.component */ "./src/app/active-subreddit/active-subreddit.component.ts");
-/* harmony import */ var _thread_thread_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./thread/thread.component */ "./src/app/thread/thread.component.ts");
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
+/* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./app.component */ "./src/app/app.component.ts");
+/* harmony import */ var _active_subreddit_active_subreddit_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./active-subreddit/active-subreddit.component */ "./src/app/active-subreddit/active-subreddit.component.ts");
+/* harmony import */ var _thread_thread_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./thread/thread.component */ "./src/app/thread/thread.component.ts");
+/* harmony import */ var _subreddit_search_subreddit_search_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./subreddit-search/subreddit-search.component */ "./src/app/subreddit-search/subreddit-search.component.ts");
+/* harmony import */ var _thread_details_thread_details_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./thread-details/thread-details.component */ "./src/app/thread-details/thread-details.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -221,22 +251,28 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 
 
 
+
+
+
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
     AppModule = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
             declarations: [
-                _app_component__WEBPACK_IMPORTED_MODULE_3__["AppComponent"],
-                _active_subreddit_active_subreddit_component__WEBPACK_IMPORTED_MODULE_4__["ActiveSubredditComponent"],
-                _thread_thread_component__WEBPACK_IMPORTED_MODULE_5__["ThreadComponent"]
+                _app_component__WEBPACK_IMPORTED_MODULE_4__["AppComponent"],
+                _active_subreddit_active_subreddit_component__WEBPACK_IMPORTED_MODULE_5__["ActiveSubredditComponent"],
+                _thread_thread_component__WEBPACK_IMPORTED_MODULE_6__["ThreadComponent"],
+                _subreddit_search_subreddit_search_component__WEBPACK_IMPORTED_MODULE_7__["SubredditSearchComponent"],
+                _thread_details_thread_details_component__WEBPACK_IMPORTED_MODULE_8__["ThreadDetailsComponent"]
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
-                _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClientModule"]
+                _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClientModule"],
+                _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormsModule"]
             ],
             providers: [],
-            bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_3__["AppComponent"]]
+            bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_4__["AppComponent"]]
         })
     ], AppModule);
     return AppModule;
@@ -284,6 +320,15 @@ var RedditService = /** @class */ (function () {
     RedditService.prototype.getActiveSubName = function () {
         return this.activeSubName;
     };
+    RedditService.prototype.searchFor = function (name) {
+        return this.http.get(this.subredditUrl + "search/" + name);
+    };
+    RedditService.prototype.subscribe = function (name) {
+        return this.http.get(this.subredditUrl + "subscribe/" + name);
+    };
+    RedditService.prototype.unsubscribe = function (name) {
+        return this.http.get(this.subredditUrl + "unsubscribe/" + name);
+    };
     RedditService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
             providedIn: 'root'
@@ -297,6 +342,154 @@ var RedditService = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/subreddit-search/subreddit-search.component.css":
+/*!*****************************************************************!*\
+  !*** ./src/app/subreddit-search/subreddit-search.component.css ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ".search-results{\n    list-style-type: none;\n    margin-left: 0px;\n    padding-left: 0px;\n}\n\n.search-result{\n    cursor: pointer;\n    padding-left: 6px;\n    padding-top: 2px;\n    padding-bottom: 2px;\n}\n\n.search-result:hover{\n    background-color: #cdcdcd;\n    transition: all .2s ease;\n    border-radius: 4px;\n}\n\n.icon{\n    height: 15px;\n    cursor: pointer;\n    margin-top: 2px;\n}\n\n"
+
+/***/ }),
+
+/***/ "./src/app/subreddit-search/subreddit-search.component.html":
+/*!******************************************************************!*\
+  !*** ./src/app/subreddit-search/subreddit-search.component.html ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<div>\n  <form class='form-inline mb-2'>\n    <div class=\"input-group\">\n      <input [(ngModel)]=\"searchTerm\" type=\"text\" placeholder=\"/r/query\" class='form-control' name=\"searchTerm\" />\n      <div class=\"input-group-append\">\n        <button (click)=\"runSearch()\" class='btn btn-primary'>Search</button>\n      </div>\n    </div>\n  </form>\n</div>\n\n<div *ngIf=\"searchResults\">\n  <h6>Search Results <img src=\"/assets/svg/circle-x.svg\" class='icon float-right' alt=\"\" (click)=\"closeResults()\"></h6>\n  <ul class=\"search-results\">\n    <li \n      class='search-result' \n      *ngFor=\"let result of searchResults\"\n      (click)=\"setActiveSub(result)\"\n    >\n      <small>{{ result }}</small>\n    </li> \n  </ul> \n</div>\n\n"
+
+/***/ }),
+
+/***/ "./src/app/subreddit-search/subreddit-search.component.ts":
+/*!****************************************************************!*\
+  !*** ./src/app/subreddit-search/subreddit-search.component.ts ***!
+  \****************************************************************/
+/*! exports provided: SubredditSearchComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SubredditSearchComponent", function() { return SubredditSearchComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _reddit_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../reddit.service */ "./src/app/reddit.service.ts");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var SubredditSearchComponent = /** @class */ (function () {
+    function SubredditSearchComponent(redditService) {
+        this.redditService = redditService;
+    }
+    SubredditSearchComponent.prototype.ngOnInit = function () { };
+    SubredditSearchComponent.prototype.runSearch = function () {
+        var _this = this;
+        var searchResults = this.redditService.searchFor(this.searchTerm).subscribe(function (response) {
+            _this.searchResults = JSON.parse(response.toString()).names;
+        });
+    };
+    SubredditSearchComponent.prototype.closeResults = function () {
+        this.searchResults = null;
+    };
+    SubredditSearchComponent.prototype.setActiveSub = function (subName) {
+        this.setActive(subName);
+    };
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Object)
+    ], SubredditSearchComponent.prototype, "setActive", void 0);
+    SubredditSearchComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-subreddit-search',
+            template: __webpack_require__(/*! ./subreddit-search.component.html */ "./src/app/subreddit-search/subreddit-search.component.html"),
+            styles: [__webpack_require__(/*! ./subreddit-search.component.css */ "./src/app/subreddit-search/subreddit-search.component.css")]
+        }),
+        __metadata("design:paramtypes", [_reddit_service__WEBPACK_IMPORTED_MODULE_1__["RedditService"]])
+    ], SubredditSearchComponent);
+    return SubredditSearchComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/thread-details/thread-details.component.css":
+/*!*************************************************************!*\
+  !*** ./src/app/thread-details/thread-details.component.css ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ""
+
+/***/ }),
+
+/***/ "./src/app/thread-details/thread-details.component.html":
+/*!**************************************************************!*\
+  !*** ./src/app/thread-details/thread-details.component.html ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<p>\n  thread-details works!\n</p>\n"
+
+/***/ }),
+
+/***/ "./src/app/thread-details/thread-details.component.ts":
+/*!************************************************************!*\
+  !*** ./src/app/thread-details/thread-details.component.ts ***!
+  \************************************************************/
+/*! exports provided: ThreadDetailsComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ThreadDetailsComponent", function() { return ThreadDetailsComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var ThreadDetailsComponent = /** @class */ (function () {
+    function ThreadDetailsComponent() {
+    }
+    ThreadDetailsComponent.prototype.ngOnInit = function () {
+    };
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", String)
+    ], ThreadDetailsComponent.prototype, "link", void 0);
+    ThreadDetailsComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-thread-details',
+            template: __webpack_require__(/*! ./thread-details.component.html */ "./src/app/thread-details/thread-details.component.html"),
+            styles: [__webpack_require__(/*! ./thread-details.component.css */ "./src/app/thread-details/thread-details.component.css")]
+        }),
+        __metadata("design:paramtypes", [])
+    ], ThreadDetailsComponent);
+    return ThreadDetailsComponent;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/thread/thread.component.css":
 /*!*********************************************!*\
   !*** ./src/app/thread/thread.component.css ***!
@@ -304,7 +497,7 @@ var RedditService = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ""
+module.exports = ".icon{\n    margin-right: 10px;\n    height: 15px;\n}\n\np{\n    font-size: 14px;\n    line-height: 22px;\n    font-weight: light;\n    background-color: #efefef;\n    padding: 12px;\n}"
 
 /***/ }),
 
@@ -315,7 +508,7 @@ module.exports = ""
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h6><a (click)=\"getThread(data.permalink)\">{{ data.title }}</a></h6>\n   "
+module.exports = "<h6>\n  <img *ngIf=\"! textVisible\" class='icon expand-icon' src=\"/assets/svg/arrow-bottom.svg\" alt=\"\" (click)=\"toggleText()\" />\n  <img *ngIf=\"textVisible\" class='icon expand-icon' src=\"/assets/svg/arrow-top.svg\" alt=\"\" (click)=\"toggleText()\" />\n\n  <a (click)=\"getThread(data.permalink)\">{{ data.title }}</a>\n</h6>\n<p *ngIf=\"textVisible\" [innerHTML]=\"data.selftext_html\"></p>       \n\n<div *ngIf=\"threadVisible\">\n    <app-thread-details [link]=\"data.permalink\"></app-thread-details>\n</div> "
 
 /***/ }),
 
@@ -342,9 +535,13 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 var ThreadComponent = /** @class */ (function () {
     function ThreadComponent() {
+        this.textVisible = false;
+        this.threadVisible = false;
     }
     ThreadComponent.prototype.ngOnInit = function () {
-        console.log(this.data);
+    };
+    ThreadComponent.prototype.toggleText = function () {
+        this.textVisible = !this.textVisible;
     };
     ThreadComponent.prototype.getThread = function (permalink) {
     };

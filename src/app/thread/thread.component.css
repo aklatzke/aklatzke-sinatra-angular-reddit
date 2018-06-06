@@ -1,0 +1,12 @@
+.icon{
+    margin-right: 10px;
+    height: 15px;
+}
+
+p{
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: light;
+    background-color: #efefef;
+    padding: 12px;
+}

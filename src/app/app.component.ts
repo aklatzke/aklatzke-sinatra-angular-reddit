@@ -12,9 +12,17 @@ import { RedditService } from "./reddit.service";
 export class AppComponent {
   title = 'app';
   activeUser = null;
-  subreddits = [];
+  subreddits = [{
+    type: String,
+    data: {
+      display_name: String
+    }
+  }];
   activeSub;
-  activeSubName;
+  activeSubName : String;
+  subscribedToActive : boolean = false;
+  passableGetSpecificSubreddit : any;
+  passableRefresh : any;
 
   constructor(
     private userService : UserService,
@@ -24,11 +32,16 @@ export class AppComponent {
   ngOnInit(){
     this.getUser()
     this.getSubbredits()
+
+    this.passableGetSpecificSubreddit = this.getSpecificSubreddit.bind(this);
+    this.passableRefresh = this.getSubbredits.bind(this);
   }
 
   getSubbredits() : void {
     this.redditService.getSubbreddits().subscribe((response: Response) => {
-      this.subreddits = JSON.parse(response.toString()).data.children;
+      this.subreddits = JSON.parse(response.toString()).data.children.sort((a, b) => {
+        return a.data.display_name.toLowerCase() > b.data.display_name.toLowerCase();
+      });
     })
   }
 
@@ -38,6 +51,7 @@ export class AppComponent {
 
     this.redditService.getSubredditDefault(name).subscribe((response: Response) => {
       this.activeSub = JSON.parse(response.toString()).data;
+      this.subscribedToActive = this.subreddits.some(sub => sub.data.display_name === name);
     })
   }
 

@@ -9,13 +9,20 @@ import { RedditService } from '../reddit.service';
 export class ThreadComponent implements OnInit {
   @Input() data: {
     title: String,
-    permalink: String
+    permalink: String,
+    selftext_html: String
   }
+
+  textVisible: boolean = false;
+  threadVisible: boolean = false;
 
   constructor() { }
 
   ngOnInit() {
-    console.log(this.data)
+  }
+
+  toggleText(){
+    this.textVisible = ! this.textVisible;
   }
 
   getThread(permalink){

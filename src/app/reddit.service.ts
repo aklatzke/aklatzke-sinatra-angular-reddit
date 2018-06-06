@@ -27,4 +27,16 @@ export class RedditService {
   getActiveSubName(){
     return this.activeSubName;
   }
+
+  searchFor(name){
+    return this.http.get(`${this.subredditUrl}search/${name}`);
+  }
+
+  subscribe(name){
+    return this.http.get(`${this.subredditUrl}subscribe/${name}`);
+  }
+
+  unsubscribe(name){
+    return this.http.get(`${this.subredditUrl}unsubscribe/${name}`);
+  }
 }

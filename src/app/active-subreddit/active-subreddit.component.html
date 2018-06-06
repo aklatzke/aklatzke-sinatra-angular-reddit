@@ -1,8 +1,15 @@
 <h4>r/{{ activeSubName }}</h4>
+<hr />
+<div class='subredditActions'>
+  <button *ngIf="isSubscribed" class='btn btn-primary btn-sm' (click)="unsubscribe()">Unsubscribe</button>
+  <button *ngIf="! isSubscribed" class='btn btn-primary btn-sm' (click)="subscribe()">Subscribe</button>
+</div>
+<hr />
 
 <ul class="thread-list" *ngIf="activeSub.children">
   <li *ngFor="let thread of activeSub.children">
     <app-thread [data]="thread.data"></app-thread>
   </li>
 </ul> 
+ 
  

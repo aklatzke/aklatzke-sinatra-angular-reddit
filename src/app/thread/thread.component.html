@@ -1,2 +1,11 @@
-<h6><a (click)="getThread(data.permalink)">{{ data.title }}</a></h6>
-   
+<h6>
+  <img *ngIf="! textVisible" class='icon expand-icon' src="/assets/svg/arrow-bottom.svg" alt="" (click)="toggleText()" />
+  <img *ngIf="textVisible" class='icon expand-icon' src="/assets/svg/arrow-top.svg" alt="" (click)="toggleText()" />
+
+  <a (click)="getThread(data.permalink)">{{ data.title }}</a>
+</h6>
+<p *ngIf="textVisible" [innerHTML]="data.selftext_html"></p>       
+
+<div *ngIf="threadVisible">
+    <app-thread-details [link]="data.permalink"></app-thread-details>
+</div> 
