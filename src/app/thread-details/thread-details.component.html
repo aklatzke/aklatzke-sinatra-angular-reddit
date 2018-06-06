@@ -1,3 +1,28 @@
-<p>
-  thread-details works!
-</p>
+<div class='thread-overlay' *ngIf="threadDetails">
+  <div class="container">
+    <div class="row pt-4">
+      <div class="col-12">
+        <h3>{{ threadDetails.title }}</h3>
+      </div>
+      <div class="col-12">
+        <div class="row">
+          <div class="col-1">
+            <img src="/assets/svg/arrow-thick-left.svg" class='arrow-icon icon' (click)="close()"/>
+          </div>
+          <div class="col-1">
+            <img src="/assets/svg/comment-square.svg" class='comment-icon icon' alt=""> {{ threadDetails.num_comments }}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <hr />
+        <p class='thread-text' [innerHTML]="threadDetails.selftext_html"></p>
+      </div>
+    </div> 
+ 
+    <div class="row" *ngFor="let comment of comments">
+      <app-thread-detail-comment></app-thread-detail-comment>
+    </div>
+  </div>  
+</div> 

@@ -7,6 +7,7 @@ import { ActiveSubredditComponent } from './active-subreddit/active-subreddit.co
 import { ThreadComponent } from './thread/thread.component';
 import { SubredditSearchComponent } from './subreddit-search/subreddit-search.component';
 import { ThreadDetailsComponent } from './thread-details/thread-details.component';
+import { ThreadDetailCommentComponent } from './thread-detail-comment/thread-detail-comment.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { ThreadDetailsComponent } from './thread-details/thread-details.componen
     ActiveSubredditComponent,
     ThreadComponent,
     SubredditSearchComponent,
-    ThreadDetailsComponent
+    ThreadDetailsComponent,
+    ThreadDetailCommentComponent
   ],
   imports: [
     BrowserModule,

@@ -2,10 +2,13 @@
   <img *ngIf="! textVisible" class='icon expand-icon' src="/assets/svg/arrow-bottom.svg" alt="" (click)="toggleText()" />
   <img *ngIf="textVisible" class='icon expand-icon' src="/assets/svg/arrow-top.svg" alt="" (click)="toggleText()" />
 
-  <a (click)="getThread(data.permalink)">{{ data.title }}</a>
+<a (click)="getThread()">{{ data.title }}
+  <span class='float-right'>({{data.num_comments}})</span>
+</a>
+
 </h6>
 <p *ngIf="textVisible" [innerHTML]="data.selftext_html"></p>       
 
 <div *ngIf="threadVisible">
-    <app-thread-details [link]="data.permalink"></app-thread-details>
-</div> 
+    <app-thread-details [id]="data.id" [sub]="data.subreddit" [close]="passableClose" ></app-thread-details>
+</div>     

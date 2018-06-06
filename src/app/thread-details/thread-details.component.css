@@ -1,0 +1,23 @@
+.thread-overlay{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 10%;
+    background-color: rgba(255, 255, 255, .95);
+    overflow-y: scroll;
+}
+
+.icon{
+    width: 15px;
+    margin-right: 4px;
+}
+
+.thread-text{
+    font-size: 14px;
+    line-height: 22px;
+}
+
+.arrow-icon {
+  width: 24px;
+}

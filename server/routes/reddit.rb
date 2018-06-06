@@ -77,3 +77,7 @@ get "/api/subreddits/unsubscribe/:name" do
         :sr_name => params['name']
     } )
 end
+
+get "/api/subreddits/:sub/:id" do
+    json redditGet("/r/#{params['sub']}/comments/#{params['id']}")
+end

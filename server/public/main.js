@@ -239,12 +239,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _thread_thread_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./thread/thread.component */ "./src/app/thread/thread.component.ts");
 /* harmony import */ var _subreddit_search_subreddit_search_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./subreddit-search/subreddit-search.component */ "./src/app/subreddit-search/subreddit-search.component.ts");
 /* harmony import */ var _thread_details_thread_details_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./thread-details/thread-details.component */ "./src/app/thread-details/thread-details.component.ts");
+/* harmony import */ var _thread_detail_comment_thread_detail_comment_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./thread-detail-comment/thread-detail-comment.component */ "./src/app/thread-detail-comment/thread-detail-comment.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -264,7 +266,8 @@ var AppModule = /** @class */ (function () {
                 _active_subreddit_active_subreddit_component__WEBPACK_IMPORTED_MODULE_5__["ActiveSubredditComponent"],
                 _thread_thread_component__WEBPACK_IMPORTED_MODULE_6__["ThreadComponent"],
                 _subreddit_search_subreddit_search_component__WEBPACK_IMPORTED_MODULE_7__["SubredditSearchComponent"],
-                _thread_details_thread_details_component__WEBPACK_IMPORTED_MODULE_8__["ThreadDetailsComponent"]
+                _thread_details_thread_details_component__WEBPACK_IMPORTED_MODULE_8__["ThreadDetailsComponent"],
+                _thread_detail_comment_thread_detail_comment_component__WEBPACK_IMPORTED_MODULE_9__["ThreadDetailCommentComponent"]
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
@@ -328,6 +331,9 @@ var RedditService = /** @class */ (function () {
     };
     RedditService.prototype.unsubscribe = function (name) {
         return this.http.get(this.subredditUrl + "unsubscribe/" + name);
+    };
+    RedditService.prototype.getThreadDetails = function (sub, id) {
+        return this.http.get("" + this.subredditUrl + sub + "/" + id);
     };
     RedditService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
@@ -423,6 +429,69 @@ var SubredditSearchComponent = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/thread-detail-comment/thread-detail-comment.component.css":
+/*!***************************************************************************!*\
+  !*** ./src/app/thread-detail-comment/thread-detail-comment.component.css ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ""
+
+/***/ }),
+
+/***/ "./src/app/thread-detail-comment/thread-detail-comment.component.html":
+/*!****************************************************************************!*\
+  !*** ./src/app/thread-detail-comment/thread-detail-comment.component.html ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<p>\n  thread-detail-comment works!\n</p>\n"
+
+/***/ }),
+
+/***/ "./src/app/thread-detail-comment/thread-detail-comment.component.ts":
+/*!**************************************************************************!*\
+  !*** ./src/app/thread-detail-comment/thread-detail-comment.component.ts ***!
+  \**************************************************************************/
+/*! exports provided: ThreadDetailCommentComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ThreadDetailCommentComponent", function() { return ThreadDetailCommentComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var ThreadDetailCommentComponent = /** @class */ (function () {
+    function ThreadDetailCommentComponent() {
+    }
+    ThreadDetailCommentComponent.prototype.ngOnInit = function () {
+    };
+    ThreadDetailCommentComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-thread-detail-comment',
+            template: __webpack_require__(/*! ./thread-detail-comment.component.html */ "./src/app/thread-detail-comment/thread-detail-comment.component.html"),
+            styles: [__webpack_require__(/*! ./thread-detail-comment.component.css */ "./src/app/thread-detail-comment/thread-detail-comment.component.css")]
+        }),
+        __metadata("design:paramtypes", [])
+    ], ThreadDetailCommentComponent);
+    return ThreadDetailCommentComponent;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/thread-details/thread-details.component.css":
 /*!*************************************************************!*\
   !*** ./src/app/thread-details/thread-details.component.css ***!
@@ -430,7 +499,7 @@ var SubredditSearchComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ""
+module.exports = ".thread-overlay{\n    position: fixed;\n    top: 0;\n    bottom: 0;\n    right: 0;\n    left: 10%;\n    background-color: rgba(255, 255, 255, .95);\n    overflow-y: scroll;\n}\n\n.icon{\n    width: 15px;\n    margin-right: 4px;\n}\n\n.thread-text{\n    font-size: 14px;\n    line-height: 22px;\n}\n\n.arrow-icon {\n  width: 24px;\n}\n"
 
 /***/ }),
 
@@ -441,7 +510,7 @@ module.exports = ""
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<p>\n  thread-details works!\n</p>\n"
+module.exports = "<div class='thread-overlay' *ngIf=\"threadDetails\">\n  <div class=\"container\">\n    <div class=\"row pt-4\">\n      <div class=\"col-12\">\n        <h3>{{ threadDetails.title }}</h3>\n      </div>\n      <div class=\"col-12\">\n        <div class=\"row\">\n          <div class=\"col-1\">\n            <img src=\"/assets/svg/arrow-thick-left.svg\" class='arrow-icon icon' (click)=\"close()\"/>\n          </div>\n          <div class=\"col-1\">\n            <img src=\"/assets/svg/comment-square.svg\" class='comment-icon icon' alt=\"\"> {{ threadDetails.num_comments }}\n          </div>\n        </div>\n      </div>\n\n      <div class=\"col-12\">\n        <hr />\n        <p class='thread-text' [innerHTML]=\"threadDetails.selftext_html\"></p>\n      </div>\n    </div> \n \n    <div class=\"row\" *ngFor=\"let comment of comments\">\n      <app-thread-detail-comment></app-thread-detail-comment>\n    </div>\n  </div>  \n</div> \n"
 
 /***/ }),
 
@@ -456,6 +525,7 @@ module.exports = "<p>\n  thread-details works!\n</p>\n"
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ThreadDetailsComponent", function() { return ThreadDetailsComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _reddit_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../reddit.service */ "./src/app/reddit.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -466,22 +536,39 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
+
 var ThreadDetailsComponent = /** @class */ (function () {
-    function ThreadDetailsComponent() {
+    function ThreadDetailsComponent(redditService) {
+        this.redditService = redditService;
     }
     ThreadDetailsComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.redditService.getThreadDetails(this.sub, this.id).subscribe(function (response) {
+            _this.fullData = JSON.parse(response.toString());
+            _this.threadDetails = _this.fullData[0].data.children[0].data;
+            console.log(_this.threadDetails);
+            _this.comments = _this.fullData[1].data.children;
+        });
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
         __metadata("design:type", String)
-    ], ThreadDetailsComponent.prototype, "link", void 0);
+    ], ThreadDetailsComponent.prototype, "id", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", String)
+    ], ThreadDetailsComponent.prototype, "sub", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Function)
+    ], ThreadDetailsComponent.prototype, "close", void 0);
     ThreadDetailsComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-thread-details',
             template: __webpack_require__(/*! ./thread-details.component.html */ "./src/app/thread-details/thread-details.component.html"),
             styles: [__webpack_require__(/*! ./thread-details.component.css */ "./src/app/thread-details/thread-details.component.css")]
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [_reddit_service__WEBPACK_IMPORTED_MODULE_1__["RedditService"]])
     ], ThreadDetailsComponent);
     return ThreadDetailsComponent;
 }());
@@ -508,7 +595,7 @@ module.exports = ".icon{\n    margin-right: 10px;\n    height: 15px;\n}\n\np{\n 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h6>\n  <img *ngIf=\"! textVisible\" class='icon expand-icon' src=\"/assets/svg/arrow-bottom.svg\" alt=\"\" (click)=\"toggleText()\" />\n  <img *ngIf=\"textVisible\" class='icon expand-icon' src=\"/assets/svg/arrow-top.svg\" alt=\"\" (click)=\"toggleText()\" />\n\n  <a (click)=\"getThread(data.permalink)\">{{ data.title }}</a>\n</h6>\n<p *ngIf=\"textVisible\" [innerHTML]=\"data.selftext_html\"></p>       \n\n<div *ngIf=\"threadVisible\">\n    <app-thread-details [link]=\"data.permalink\"></app-thread-details>\n</div> "
+module.exports = "<h6>\n  <img *ngIf=\"! textVisible\" class='icon expand-icon' src=\"/assets/svg/arrow-bottom.svg\" alt=\"\" (click)=\"toggleText()\" />\n  <img *ngIf=\"textVisible\" class='icon expand-icon' src=\"/assets/svg/arrow-top.svg\" alt=\"\" (click)=\"toggleText()\" />\n\n<a (click)=\"getThread()\">{{ data.title }}\n  <span class='float-right'>({{data.num_comments}})</span>\n</a>\n\n</h6>\n<p *ngIf=\"textVisible\" [innerHTML]=\"data.selftext_html\"></p>       \n\n<div *ngIf=\"threadVisible\">\n    <app-thread-details [id]=\"data.id\" [sub]=\"data.subreddit\" [close]=\"passableClose\" ></app-thread-details>\n</div>     "
 
 /***/ }),
 
@@ -539,11 +626,16 @@ var ThreadComponent = /** @class */ (function () {
         this.threadVisible = false;
     }
     ThreadComponent.prototype.ngOnInit = function () {
+        this.passableClose = this.closeThread.bind(this);
+    };
+    ThreadComponent.prototype.closeThread = function () {
+        this.threadVisible = false;
     };
     ThreadComponent.prototype.toggleText = function () {
         this.textVisible = !this.textVisible;
     };
-    ThreadComponent.prototype.getThread = function (permalink) {
+    ThreadComponent.prototype.getThread = function () {
+        this.threadVisible = true;
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),

@@ -10,22 +10,31 @@ export class ThreadComponent implements OnInit {
   @Input() data: {
     title: String,
     permalink: String,
-    selftext_html: String
+    selftext_html: String,
+    id : String,
+    subreddit: String,
+    num_comments: Number
   }
 
   textVisible: boolean = false;
   threadVisible: boolean = false;
+  passableClose: any;
 
   constructor() { }
 
   ngOnInit() {
+    this.passableClose = this.closeThread.bind(this);
+  }
+
+  closeThread(){
+    this.threadVisible = false;
   }
 
   toggleText(){
     this.textVisible = ! this.textVisible;
   }
 
-  getThread(permalink){
-
+  getThread(){
+    this.threadVisible = true;
   }
 }

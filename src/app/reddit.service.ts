@@ -39,4 +39,8 @@ export class RedditService {
   unsubscribe(name){
     return this.http.get(`${this.subredditUrl}unsubscribe/${name}`);
   }
+
+  getThreadDetails(sub, id){
+    return this.http.get(`${this.subredditUrl}${sub}/${id}`);
+  }
 }
