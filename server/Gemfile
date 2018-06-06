@@ -1,0 +1,12 @@
+source 'https://rubygems.org'
+
+gem "sinatra"
+gem "bundler"
+gem "http"
+source 'https://rubygems.org'
+
+gem "sinatra"
+gem "sinatra-contrib"
+gem "bundler"
+gem 'redd'
+gem 'sinatra-cors'

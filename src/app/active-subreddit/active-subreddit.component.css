@@ -1,0 +1,9 @@
+.thread-list{
+    padding-left: 0px;
+    list-style-type: none;
+}
+
+.thread-list li{
+    margin-bottom: 10px;
+    cursor: pointer;
+}
