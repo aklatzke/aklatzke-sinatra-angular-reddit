@@ -1,5 +1,8 @@
 <div class='comment depth-{{data.depth}}' *ngIf="! collapsed">
-  <strong *ngIf="data.author">{{ data.author }}</strong>
+  <strong *ngIf="data.author">
+    {{ data.author }} 
+    <app-thread-detail-comment-flair *ngIf="data.author_flair_text" [data]="data.author_flair_text"></app-thread-detail-comment-flair>
+  </strong>
   <strong *ngIf="!data.author">[deleted]</strong>
 
   <div class="fixed-right">

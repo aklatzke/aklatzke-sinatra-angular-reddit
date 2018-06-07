@@ -25,8 +25,6 @@ export class ActiveSubredditComponent implements OnInit {
   ) { }
 
   ngOnInit() { 
-    console.log(this.activeSub)
-
     this.currentAfter = this.activeSub.after;
   } 
 

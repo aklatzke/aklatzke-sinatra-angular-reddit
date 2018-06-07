@@ -11,6 +11,7 @@ import { ThreadDetailCommentComponent } from './thread-detail-comment/thread-det
 import { ThreadMediaComponent } from './thread-media/thread-media.component';
 import { TwitterComponent } from './thread-media/twitter/twitter.component';
 import { ThreadDetailMoreComponent } from './thread-detail-more/thread-detail-more.component';
+import { ThreadDetailCommentFlairComponent } from './thread-detail-comment-flair/thread-detail-comment-flair.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { ThreadDetailMoreComponent } from './thread-detail-more/thread-detail-mo
     ThreadDetailCommentComponent,
     ThreadMediaComponent,
     TwitterComponent,
-    ThreadDetailMoreComponent
+    ThreadDetailMoreComponent,
+    ThreadDetailCommentFlairComponent
   ],
   imports: [
     BrowserModule,

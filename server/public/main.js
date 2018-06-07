@@ -73,7 +73,6 @@ var ActiveSubredditComponent = /** @class */ (function () {
         this.redditService = redditService;
     }
     ActiveSubredditComponent.prototype.ngOnInit = function () {
-        console.log(this.activeSub);
         this.currentAfter = this.activeSub.after;
     };
     ActiveSubredditComponent.prototype.subscribe = function () {
@@ -260,12 +259,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _thread_media_thread_media_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./thread-media/thread-media.component */ "./src/app/thread-media/thread-media.component.ts");
 /* harmony import */ var _thread_media_twitter_twitter_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./thread-media/twitter/twitter.component */ "./src/app/thread-media/twitter/twitter.component.ts");
 /* harmony import */ var _thread_detail_more_thread_detail_more_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./thread-detail-more/thread-detail-more.component */ "./src/app/thread-detail-more/thread-detail-more.component.ts");
+/* harmony import */ var _thread_detail_comment_flair_thread_detail_comment_flair_component__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./thread-detail-comment-flair/thread-detail-comment-flair.component */ "./src/app/thread-detail-comment-flair/thread-detail-comment-flair.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -293,7 +294,8 @@ var AppModule = /** @class */ (function () {
                 _thread_detail_comment_thread_detail_comment_component__WEBPACK_IMPORTED_MODULE_9__["ThreadDetailCommentComponent"],
                 _thread_media_thread_media_component__WEBPACK_IMPORTED_MODULE_10__["ThreadMediaComponent"],
                 _thread_media_twitter_twitter_component__WEBPACK_IMPORTED_MODULE_11__["TwitterComponent"],
-                _thread_detail_more_thread_detail_more_component__WEBPACK_IMPORTED_MODULE_12__["ThreadDetailMoreComponent"]
+                _thread_detail_more_thread_detail_more_component__WEBPACK_IMPORTED_MODULE_12__["ThreadDetailMoreComponent"],
+                _thread_detail_comment_flair_thread_detail_comment_flair_component__WEBPACK_IMPORTED_MODULE_13__["ThreadDetailCommentFlairComponent"]
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
@@ -465,6 +467,74 @@ var SubredditSearchComponent = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/thread-detail-comment-flair/thread-detail-comment-flair.component.css":
+/*!***************************************************************************************!*\
+  !*** ./src/app/thread-detail-comment-flair/thread-detail-comment-flair.component.css ***!
+  \***************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ".flair{\n    background-color: #cdcdcd;\n    border-radius: 2px;\n    margin-left: 8px;\n    font-size: 12px;\n    line-height: 22px;\n    padding: 2px;\n    padding-left: 6px;\n    padding-right: 6px;\n}"
+
+/***/ }),
+
+/***/ "./src/app/thread-detail-comment-flair/thread-detail-comment-flair.component.html":
+/*!****************************************************************************************!*\
+  !*** ./src/app/thread-detail-comment-flair/thread-detail-comment-flair.component.html ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<span class='flair'>{{ data }}</span>\n"
+
+/***/ }),
+
+/***/ "./src/app/thread-detail-comment-flair/thread-detail-comment-flair.component.ts":
+/*!**************************************************************************************!*\
+  !*** ./src/app/thread-detail-comment-flair/thread-detail-comment-flair.component.ts ***!
+  \**************************************************************************************/
+/*! exports provided: ThreadDetailCommentFlairComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ThreadDetailCommentFlairComponent", function() { return ThreadDetailCommentFlairComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var ThreadDetailCommentFlairComponent = /** @class */ (function () {
+    function ThreadDetailCommentFlairComponent() {
+    }
+    ThreadDetailCommentFlairComponent.prototype.ngOnInit = function () {
+        console.log(this.data);
+    };
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", String)
+    ], ThreadDetailCommentFlairComponent.prototype, "data", void 0);
+    ThreadDetailCommentFlairComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-thread-detail-comment-flair',
+            template: __webpack_require__(/*! ./thread-detail-comment-flair.component.html */ "./src/app/thread-detail-comment-flair/thread-detail-comment-flair.component.html"),
+            styles: [__webpack_require__(/*! ./thread-detail-comment-flair.component.css */ "./src/app/thread-detail-comment-flair/thread-detail-comment-flair.component.css")]
+        }),
+        __metadata("design:paramtypes", [])
+    ], ThreadDetailCommentFlairComponent);
+    return ThreadDetailCommentFlairComponent;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/thread-detail-comment/thread-detail-comment.component.css":
 /*!***************************************************************************!*\
   !*** ./src/app/thread-detail-comment/thread-detail-comment.component.css ***!
@@ -472,7 +542,7 @@ var SubredditSearchComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "[class*=depth]{\n    padding-left: 10px;\n    border-left: 2px solid #333;\n    padding-top: 4px;\n    padding-bottom: 4px;\n}\n\n.depth-0{\n    border-left: 4px solid #333;\n    margin-bottom: 10px;\n    background-color: rgba(100, 100, 100, .05);\n    padding-left: 15px;\n    padding-right: 15px;\n}\n\n.comment{\n    font-size: 14px;\n    line-height: 22px;\n    width: 100%;\n    position: relative;\n    padding-right: 85px;\n}\n\n.comment p{ \n    margin-bottom: 0px;\n}\n\n.comment .comment{\n    position: static;\n}\n\n.fixed-right{\n    position: absolute;\n    right: 15px;\n}\n\n.collapse{\n    cursor: pointer;\n    width: 14px;\n    display: inline-block;\n    margin-right: 8px;\n}\n\n.collapse-expand{\n    top: 4px;\n}\n\n.load-more-comment{\n    cursor: pointer;\n}"
+module.exports = "[class*=depth]{\n    padding-left: 10px;\n    border-left: 2px solid #333;\n    padding-top: 4px;\n    padding-bottom: 4px;\n}\n\n.depth-0{\n    border-left: 4px solid #333;\n    margin-bottom: 10px;\n    background-color: rgba(100, 100, 100, .05);\n    padding-left: 15px;\n    padding-right: 15px;\n}\n\n.comment{\n    font-size: 14px;\n    line-height: 22px;\n    width: 100%;\n    position: relative;\n    padding-right: 85px;\n}\n\n.comment p{ \n    margin-bottom: 0px;\n}\n\n.comment .comment{\n    position: static;\n}\n\n.fixed-right{\n    position: absolute;\n    right: 15px;\n}\n\n.collapse{\n    cursor: pointer;\n    width: 14px;\n    display: inline-block;\n    margin-right: 8px;\n}\n\n.collapse-expand{\n    top: 4px;\n}\n\n.load-more-comment{\n    cursor: pointer;\n}\n\n.depth-1{\n    border-color: rgba(123, 12, 184, 1);\n}\n\n.depth-2{\n    border-color: rgba(12, 123, 184, 1);\n}"
 
 /***/ }),
 
@@ -483,7 +553,7 @@ module.exports = "[class*=depth]{\n    padding-left: 10px;\n    border-left: 2px
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class='comment depth-{{data.depth}}' *ngIf=\"! collapsed\">\n  <strong *ngIf=\"data.author\">{{ data.author }}</strong>\n  <strong *ngIf=\"!data.author\">[deleted]</strong>\n\n  <div class=\"fixed-right\">\n    <img class='collapse' src=\"/assets/svg/fullscreen-exit.svg\" alt=\"\" (click)=\"collapse()\">\n\n    <span *ngIf=\"data.score\">[{{data.score}}]</span>\n    <span *ngIf=\"!data.score\">[-]</span>\n  </div>\n\n  <p *ngIf=\"!data.body_html\">[deleted]</p>\n  <p *ngIf=\"data.body_html\" [innerHTML]=\"data.body_html\"></p>\n\n  <div class='comment-children' *ngIf=\"data.replies !== undefined\">\n    <div *ngIf=\"data.replies\">\n      <div *ngFor=\"let child of data.replies.data.children\">\n        <app-thread-detail-comment *ngIf=\"child.kind !== 'more'\" [data]=\"child.data\"></app-thread-detail-comment>\n        <app-thread-detail-more *ngIf=\"child.kind === 'more'\" [loadMore]=\"passableLoadMore\" [data]=\"child.data\"></app-thread-detail-more>\n      </div>\n    </div> \n  </div> \n</div>\n\n<div class='comment depth-{{data.depth}}' *ngIf=\"collapsed\">\n  <strong *ngIf=\"data.author\">\n    <em>[hidden]</em>\n  </strong>\n\n  <div class=\"fixed-right collapse-expand\">\n    <img class='collapse' src=\"/assets/svg/fullscreen-enter.svg\" alt=\"\" (click)=\"collapse()\">\n  </div>\n</div>\n"
+module.exports = "<div class='comment depth-{{data.depth}}' *ngIf=\"! collapsed\">\n  <strong *ngIf=\"data.author\">\n    {{ data.author }} \n    <app-thread-detail-comment-flair *ngIf=\"data.author_flair_text\" [data]=\"data.author_flair_text\"></app-thread-detail-comment-flair>\n  </strong>\n  <strong *ngIf=\"!data.author\">[deleted]</strong>\n\n  <div class=\"fixed-right\">\n    <img class='collapse' src=\"/assets/svg/fullscreen-exit.svg\" alt=\"\" (click)=\"collapse()\">\n\n    <span *ngIf=\"data.score\">[{{data.score}}]</span>\n    <span *ngIf=\"!data.score\">[-]</span>\n  </div>\n\n  <p *ngIf=\"!data.body_html\">[deleted]</p>\n  <p *ngIf=\"data.body_html\" [innerHTML]=\"data.body_html\"></p>\n\n  <div class='comment-children' *ngIf=\"data.replies !== undefined\">\n    <div *ngIf=\"data.replies\">\n      <div *ngFor=\"let child of data.replies.data.children\">\n        <app-thread-detail-comment *ngIf=\"child.kind !== 'more'\" [data]=\"child.data\"></app-thread-detail-comment>\n        <app-thread-detail-more *ngIf=\"child.kind === 'more'\" [loadMore]=\"passableLoadMore\" [data]=\"child.data\"></app-thread-detail-more>\n      </div>\n    </div> \n  </div> \n</div>\n\n<div class='comment depth-{{data.depth}}' *ngIf=\"collapsed\">\n  <strong *ngIf=\"data.author\">\n    <em>[hidden]</em>\n  </strong>\n\n  <div class=\"fixed-right collapse-expand\">\n    <img class='collapse' src=\"/assets/svg/fullscreen-enter.svg\" alt=\"\" (click)=\"collapse()\">\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -523,7 +593,6 @@ var ThreadDetailCommentComponent = /** @class */ (function () {
     };
     ThreadDetailCommentComponent.prototype.loadMore = function (children) {
         var _this = this;
-        console.log(children);
         this.redditService.loadMoreComments(this.data.link_id, children).subscribe(function (data) {
             data = JSON.parse(data).json;
             if (data.data) {

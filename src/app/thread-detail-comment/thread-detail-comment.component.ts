@@ -38,7 +38,6 @@ export class ThreadDetailCommentComponent implements OnInit {
   }
 
   loadMore(children){
-    console.log(children)
     this.redditService.loadMoreComments(this.data.link_id, children).subscribe((data : any) => {
       data = JSON.parse(data).json;
       if( data.data ){

@@ -48,3 +48,11 @@
 .load-more-comment{
     cursor: pointer;
 }
+
+.depth-1{
+    border-color: rgba(123, 12, 184, 1);
+}
+
+.depth-2{
+    border-color: rgba(12, 123, 184, 1);
+}
