@@ -30,7 +30,7 @@ webpackEmptyAsyncContext.id = "./src/$$_lazy_route_resource lazy recursive";
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".thread-list{\n    padding-left: 0px;\n    list-style-type: none;\n}\n\n.thread-list li{\n    margin-bottom: 10px;\n    cursor: pointer;\n}"
+module.exports = ".thread-list{\n    padding-left: 0px;\n    list-style-type: none;\n}\n\n.thread-list li{\n    margin-bottom: 10px;\n    cursor: pointer;\n}\n\n.refresh-button img{\n    width: 20px;\n}"
 
 /***/ }),
 
@@ -41,7 +41,7 @@ module.exports = ".thread-list{\n    padding-left: 0px;\n    list-style-type: no
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h4>r/{{ activeSubName }}</h4>\n<hr />\n<div class='subredditActions'>\n  <button *ngIf=\"isSubscribed\" class='btn btn-primary btn-sm' (click)=\"unsubscribe()\">Unsubscribe</button>\n  <button *ngIf=\"! isSubscribed\" class='btn btn-primary btn-sm' (click)=\"subscribe()\">Subscribe</button>\n</div>\n<hr />\n\n<ul class=\"thread-list\" *ngIf=\"activeSub.children\">\n  <li *ngFor=\"let thread of activeSub.children\">\n    <app-thread [data]=\"thread.data\"></app-thread>\n  </li>\n</ul> \n \n "
+module.exports = "<h4>r/{{ activeSubName }}</h4>\n<hr />\n<div class='subredditActions'>\n  <button \n    class=\"btn btn-sm mr-2 refresh-button btn-outline-secondary\" \n    (click)=\"refreshActive(activeSubName)\"\n  ><img src=\"/assets/svg/loop-circular.svg\" alt=\"\"></button>\n  <button *ngIf=\"isSubscribed\" class='btn btn-primary btn-sm' (click)=\"unsubscribe()\">Unsubscribe</button>\n  <button *ngIf=\"! isSubscribed\" class='btn btn-primary btn-sm' (click)=\"subscribe()\">Subscribe</button>\n</div>\n<hr />\n \n<ul class=\"thread-list\" *ngIf=\"activeSub.children\">\n  <li *ngFor=\"let thread of activeSub.children\" class=\"mt-2\">\n    <app-thread [data]=\"thread.data\"></app-thread>\n  </li>\n</ul>   \n\n<div class=\"row mt-5 mb-5\">\n  <div class=\"col-12\">\n    <button class=\"btn btn-outline-secondary btn-block\" (click)=\"loadMore()\">LOAD MORE</button>\n  </div>\n</div>\n \n "
 
 /***/ }),
 
@@ -74,6 +74,7 @@ var ActiveSubredditComponent = /** @class */ (function () {
     }
     ActiveSubredditComponent.prototype.ngOnInit = function () {
         console.log(this.activeSub);
+        this.currentAfter = this.activeSub.after;
     };
     ActiveSubredditComponent.prototype.subscribe = function () {
         var _this = this;
@@ -83,6 +84,15 @@ var ActiveSubredditComponent = /** @class */ (function () {
         var _this = this;
         this.redditService.unsubscribe(this.activeSubName).subscribe(function (response) { return _this.refresh(); });
     };
+    ActiveSubredditComponent.prototype.loadMore = function () {
+        var _this = this;
+        this.redditService.loadMore(this.activeSubName, this.currentAfter).subscribe(function (response) {
+            var data = JSON.parse(response.toString()).data;
+            var newChildren = data.children;
+            _this.currentAfter = data.after;
+            _this.activeSub.children = _this.activeSub.children.concat(newChildren);
+        });
+    };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
         __metadata("design:type", Object)
@@ -91,6 +101,10 @@ var ActiveSubredditComponent = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
         __metadata("design:type", Object)
     ], ActiveSubredditComponent.prototype, "refresh", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Function)
+    ], ActiveSubredditComponent.prototype, "refreshActive", void 0);
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
         __metadata("design:type", String)
@@ -121,7 +135,7 @@ var ActiveSubredditComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".nav-link{\n    cursor: pointer;\n}"
+module.exports = ".nav-link{\n    cursor: pointer;\n}\n\n.preloader{\n    position: fixed;\n    left: 50%;\n    top: 50%;\n    -webkit-transform: translateX(-50%) translateY(-50%);\n            transform: translateX(-50%) translateY(-50%);\n}\n\n.side-nav{\n    position: relative;\n}\n\n.fixed-nav{\n    position: fixed;\n    top: 0;\n    bottom: 0;\n    left: 0;\n    width: 100%;\n    width: 16.666667%;\n    padding-left: 15px;\n    padding-right: 15px;\n}"
 
 /***/ }),
 
@@ -132,7 +146,7 @@ module.exports = ".nav-link{\n    cursor: pointer;\n}"
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container-fluid\">\n  <div class=\"row\">\n    <div class=\"col-2 pt-2\">\n      <h5>Welcome {{activeUser}}</h5> \n      <app-subreddit-search\n        [setActive]=\"passableGetSpecificSubreddit\"\n      ></app-subreddit-search>\n      <hr /> \n      <h6>Your Subreddits</h6>\n      <ul class='nav nav-pills flex-column'>\n          <a class='nav-link' \n              *ngFor=\"let subs of subreddits\" \n              (click)=\"getSpecificSubreddit(subs.data.display_name)\"\n              [class.active]=\"subs.data.display_name === activeSubName\"\n          >\n            {{ subs.data.display_name }}\n          </a>\n      </ul>\n    </div> \n    <div class=\"col-10 pl-5 pr-5 pt-2\" *ngIf=\"activeSub\">\n      <app-active-subreddit \n        [activeSub]=\"activeSub\" \n        [activeSubName]=\"activeSubName\"\n        [isSubscribed]=\"subscribedToActive\"\n        [refresh]=\"passableRefresh\"\n      >\n      </app-active-subreddit>\n    </div>    \n  </div>\n</div> "
+module.exports = "<div class=\"container-fluid\">\n  <div class=\"row\">\n    <div class=\"col-2 pt-4 side-nav\">\n      <div class=\"fixed-nav pt-4\">\n        <h5>Welcome {{activeUser}}</h5>\n        <app-subreddit-search [setActive]=\"passableGetSpecificSubreddit\"></app-subreddit-search>\n        <hr />\n        <h6>Your Subreddits</h6>\n        <ul class='nav nav-pills flex-column'>\n          <a class=\"nav-link\" (click)=\"loadFrontPage()\" [class.active]=\"activeSubName === 'front'\">Front Page</a>\n          <a class='nav-link' *ngFor=\"let subs of subreddits\" (click)=\"getSpecificSubreddit(subs.data.display_name)\" [class.active]=\"subs.data.display_name === activeSubName\">\n            {{ subs.data.display_name }}\n          </a>\n        </ul>\n      </div>\n    </div> \n    <div class=\"col-10 pl-5 pr-5 pt-4\" *ngIf=\"activeSub\">\n      <app-active-subreddit \n        [activeSub]=\"activeSub\" \n        [activeSubName]=\"activeSubName\"\n        [isSubscribed]=\"subscribedToActive\"\n        [refresh]=\"passableRefresh\"\n        [refreshActive]=\"passableGetSpecificSubreddit\"\n      >\n      </app-active-subreddit>\n    </div>      \n\n    <div class=\"col-10\" *ngIf=\"!activeSub\">\n      <img class='preloader' src=\"/assets/preloader.gif\" alt=\"\" />\n    </div>\n  </div>\n</div>   "
 
 /***/ }),
 
@@ -167,19 +181,22 @@ var AppComponent = /** @class */ (function () {
         this.redditService = redditService;
         this.title = 'app';
         this.activeUser = null;
-        this.subreddits = [{
-                type: String,
-                data: {
-                    display_name: String
-                }
-            }];
         this.subscribedToActive = false;
     }
     AppComponent.prototype.ngOnInit = function () {
         this.getUser();
         this.getSubbredits();
+        this.loadFrontPage();
         this.passableGetSpecificSubreddit = this.getSpecificSubreddit.bind(this);
         this.passableRefresh = this.getSubbredits.bind(this);
+    };
+    AppComponent.prototype.loadFrontPage = function () {
+        var _this = this;
+        this.activeSubName = "front";
+        this.activeSub = null;
+        this.redditService.getFrontPage().subscribe(function (response) {
+            _this.activeSub = JSON.parse(response.toString()).data;
+        });
     };
     AppComponent.prototype.getSubbredits = function () {
         var _this = this;
@@ -240,12 +257,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _subreddit_search_subreddit_search_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./subreddit-search/subreddit-search.component */ "./src/app/subreddit-search/subreddit-search.component.ts");
 /* harmony import */ var _thread_details_thread_details_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./thread-details/thread-details.component */ "./src/app/thread-details/thread-details.component.ts");
 /* harmony import */ var _thread_detail_comment_thread_detail_comment_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./thread-detail-comment/thread-detail-comment.component */ "./src/app/thread-detail-comment/thread-detail-comment.component.ts");
+/* harmony import */ var _thread_media_thread_media_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./thread-media/thread-media.component */ "./src/app/thread-media/thread-media.component.ts");
+/* harmony import */ var _thread_media_twitter_twitter_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./thread-media/twitter/twitter.component */ "./src/app/thread-media/twitter/twitter.component.ts");
+/* harmony import */ var _thread_detail_more_thread_detail_more_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./thread-detail-more/thread-detail-more.component */ "./src/app/thread-detail-more/thread-detail-more.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
+
+
 
 
 
@@ -267,11 +290,15 @@ var AppModule = /** @class */ (function () {
                 _thread_thread_component__WEBPACK_IMPORTED_MODULE_6__["ThreadComponent"],
                 _subreddit_search_subreddit_search_component__WEBPACK_IMPORTED_MODULE_7__["SubredditSearchComponent"],
                 _thread_details_thread_details_component__WEBPACK_IMPORTED_MODULE_8__["ThreadDetailsComponent"],
-                _thread_detail_comment_thread_detail_comment_component__WEBPACK_IMPORTED_MODULE_9__["ThreadDetailCommentComponent"]
+                _thread_detail_comment_thread_detail_comment_component__WEBPACK_IMPORTED_MODULE_9__["ThreadDetailCommentComponent"],
+                _thread_media_thread_media_component__WEBPACK_IMPORTED_MODULE_10__["ThreadMediaComponent"],
+                _thread_media_twitter_twitter_component__WEBPACK_IMPORTED_MODULE_11__["TwitterComponent"],
+                _thread_detail_more_thread_detail_more_component__WEBPACK_IMPORTED_MODULE_12__["ThreadDetailMoreComponent"]
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
                 _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClientModule"],
+                _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClientJsonpModule"],
                 _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormsModule"]
             ],
             providers: [],
@@ -333,7 +360,16 @@ var RedditService = /** @class */ (function () {
         return this.http.get(this.subredditUrl + "unsubscribe/" + name);
     };
     RedditService.prototype.getThreadDetails = function (sub, id) {
-        return this.http.get("" + this.subredditUrl + sub + "/" + id);
+        return this.http.get(this.subredditUrl + "specific/" + sub + "/" + id);
+    };
+    RedditService.prototype.getFrontPage = function () {
+        return this.http.get(this.subredditUrl + "front");
+    };
+    RedditService.prototype.loadMore = function (sub, page) {
+        return this.http.get(this.subredditUrl + "load/" + sub + "/" + page);
+    };
+    RedditService.prototype.loadMoreComments = function (linkId, children) {
+        return this.http.get(this.subredditUrl + "comments/" + linkId + "?children=" + children.join(","));
     };
     RedditService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
@@ -436,7 +472,7 @@ var SubredditSearchComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ""
+module.exports = "[class*=depth]{\n    padding-left: 10px;\n    border-left: 2px solid #333;\n    padding-top: 4px;\n    padding-bottom: 4px;\n}\n\n.depth-0{\n    border-left: 4px solid #333;\n    margin-bottom: 10px;\n    background-color: rgba(100, 100, 100, .05);\n    padding-left: 15px;\n    padding-right: 15px;\n}\n\n.comment{\n    font-size: 14px;\n    line-height: 22px;\n    width: 100%;\n    position: relative;\n    padding-right: 85px;\n}\n\n.comment p{ \n    margin-bottom: 0px;\n}\n\n.comment .comment{\n    position: static;\n}\n\n.fixed-right{\n    position: absolute;\n    right: 15px;\n}\n\n.collapse{\n    cursor: pointer;\n    width: 14px;\n    display: inline-block;\n    margin-right: 8px;\n}\n\n.collapse-expand{\n    top: 4px;\n}\n\n.load-more-comment{\n    cursor: pointer;\n}"
 
 /***/ }),
 
@@ -447,7 +483,7 @@ module.exports = ""
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<p>\n  thread-detail-comment works!\n</p>\n"
+module.exports = "<div class='comment depth-{{data.depth}}' *ngIf=\"! collapsed\">\n  <strong *ngIf=\"data.author\">{{ data.author }}</strong>\n  <strong *ngIf=\"!data.author\">[deleted]</strong>\n\n  <div class=\"fixed-right\">\n    <img class='collapse' src=\"/assets/svg/fullscreen-exit.svg\" alt=\"\" (click)=\"collapse()\">\n\n    <span *ngIf=\"data.score\">[{{data.score}}]</span>\n    <span *ngIf=\"!data.score\">[-]</span>\n  </div>\n\n  <p *ngIf=\"!data.body_html\">[deleted]</p>\n  <p *ngIf=\"data.body_html\" [innerHTML]=\"data.body_html\"></p>\n\n  <div class='comment-children' *ngIf=\"data.replies !== undefined\">\n    <div *ngIf=\"data.replies\">\n      <div *ngFor=\"let child of data.replies.data.children\">\n        <app-thread-detail-comment *ngIf=\"child.kind !== 'more'\" [data]=\"child.data\"></app-thread-detail-comment>\n        <app-thread-detail-more *ngIf=\"child.kind === 'more'\" [loadMore]=\"passableLoadMore\" [data]=\"child.data\"></app-thread-detail-more>\n      </div>\n    </div> \n  </div> \n</div>\n\n<div class='comment depth-{{data.depth}}' *ngIf=\"collapsed\">\n  <strong *ngIf=\"data.author\">\n    <em>[hidden]</em>\n  </strong>\n\n  <div class=\"fixed-right collapse-expand\">\n    <img class='collapse' src=\"/assets/svg/fullscreen-enter.svg\" alt=\"\" (click)=\"collapse()\">\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -462,6 +498,7 @@ module.exports = "<p>\n  thread-detail-comment works!\n</p>\n"
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ThreadDetailCommentComponent", function() { return ThreadDetailCommentComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _reddit_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../reddit.service */ "./src/app/reddit.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -472,20 +509,113 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
+
 var ThreadDetailCommentComponent = /** @class */ (function () {
-    function ThreadDetailCommentComponent() {
+    function ThreadDetailCommentComponent(redditService) {
+        this.redditService = redditService;
+        this.collapsed = false;
     }
     ThreadDetailCommentComponent.prototype.ngOnInit = function () {
+        this.passableLoadMore = this.loadMore.bind(this);
     };
+    ThreadDetailCommentComponent.prototype.collapse = function () {
+        this.collapsed = !this.collapsed;
+    };
+    ThreadDetailCommentComponent.prototype.loadMore = function (children) {
+        var _this = this;
+        console.log(children);
+        this.redditService.loadMoreComments(this.data.link_id, children).subscribe(function (data) {
+            data = JSON.parse(data).json;
+            if (data.data) {
+                data = data.data.things;
+                _this.data.replies.data.children.pop();
+                _this.data.replies.data.children = _this.data.replies.data.children.concat(data);
+            }
+        });
+    };
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Object)
+    ], ThreadDetailCommentComponent.prototype, "data", void 0);
     ThreadDetailCommentComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-thread-detail-comment',
             template: __webpack_require__(/*! ./thread-detail-comment.component.html */ "./src/app/thread-detail-comment/thread-detail-comment.component.html"),
             styles: [__webpack_require__(/*! ./thread-detail-comment.component.css */ "./src/app/thread-detail-comment/thread-detail-comment.component.css")]
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [_reddit_service__WEBPACK_IMPORTED_MODULE_1__["RedditService"]])
     ], ThreadDetailCommentComponent);
     return ThreadDetailCommentComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/thread-detail-more/thread-detail-more.component.css":
+/*!*********************************************************************!*\
+  !*** ./src/app/thread-detail-more/thread-detail-more.component.css ***!
+  \*********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ""
+
+/***/ }),
+
+/***/ "./src/app/thread-detail-more/thread-detail-more.component.html":
+/*!**********************************************************************!*\
+  !*** ./src/app/thread-detail-more/thread-detail-more.component.html ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<div class='comment depth-{{data.depth}} load-more-comment'>\n  <strong (click)=\"loadMore(data.children)\">Load More Comments</strong>\n</div>\n\n"
+
+/***/ }),
+
+/***/ "./src/app/thread-detail-more/thread-detail-more.component.ts":
+/*!********************************************************************!*\
+  !*** ./src/app/thread-detail-more/thread-detail-more.component.ts ***!
+  \********************************************************************/
+/*! exports provided: ThreadDetailMoreComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ThreadDetailMoreComponent", function() { return ThreadDetailMoreComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var ThreadDetailMoreComponent = /** @class */ (function () {
+    function ThreadDetailMoreComponent() {
+    }
+    ThreadDetailMoreComponent.prototype.ngOnInit = function () { };
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Function)
+    ], ThreadDetailMoreComponent.prototype, "loadMore", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Object)
+    ], ThreadDetailMoreComponent.prototype, "data", void 0);
+    ThreadDetailMoreComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-thread-detail-more',
+            template: __webpack_require__(/*! ./thread-detail-more.component.html */ "./src/app/thread-detail-more/thread-detail-more.component.html"),
+            styles: [__webpack_require__(/*! ./thread-detail-more.component.css */ "./src/app/thread-detail-more/thread-detail-more.component.css")]
+        }),
+        __metadata("design:paramtypes", [])
+    ], ThreadDetailMoreComponent);
+    return ThreadDetailMoreComponent;
 }());
 
 
@@ -499,7 +629,7 @@ var ThreadDetailCommentComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".thread-overlay{\n    position: fixed;\n    top: 0;\n    bottom: 0;\n    right: 0;\n    left: 10%;\n    background-color: rgba(255, 255, 255, .95);\n    overflow-y: scroll;\n}\n\n.icon{\n    width: 15px;\n    margin-right: 4px;\n}\n\n.thread-text{\n    font-size: 14px;\n    line-height: 22px;\n}\n\n.arrow-icon {\n  width: 24px;\n}\n"
+module.exports = ".thread-overlay{\n    position: fixed;\n    top: 0;\n    bottom: 0;\n    right: 0;\n    left: 10%;\n    background-color: rgba(255, 255, 255, .95);\n    overflow-y: scroll;\n    z-index: 999;\n    border-left: 2px solid rgba(0,0,0,.5);\n}\n\n.icon{\n    width: 15px;\n    margin-right: 4px;\n}\n\n.thread-text{\n    font-size: 16px;\n    line-height: 24px;\n    border-bottom: 1px solid #cdcdcd;\n    padding-top: 15px;\n    padding-bottom: 15px;\n}\n\n.arrow-icon {\n  width: 24px;\n  cursor: pointer;\n}\n\n.collapse-icon{\n    width: 24px;\n    cursor: pointer;\n}\n\n.refresh-icon{\n    width: 24px;\n}\n\n.span-row{\n    width: 100%;\n}"
 
 /***/ }),
 
@@ -510,7 +640,7 @@ module.exports = ".thread-overlay{\n    position: fixed;\n    top: 0;\n    botto
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class='thread-overlay' *ngIf=\"threadDetails\">\n  <div class=\"container\">\n    <div class=\"row pt-4\">\n      <div class=\"col-12\">\n        <h3>{{ threadDetails.title }}</h3>\n      </div>\n      <div class=\"col-12\">\n        <div class=\"row\">\n          <div class=\"col-1\">\n            <img src=\"/assets/svg/arrow-thick-left.svg\" class='arrow-icon icon' (click)=\"close()\"/>\n          </div>\n          <div class=\"col-1\">\n            <img src=\"/assets/svg/comment-square.svg\" class='comment-icon icon' alt=\"\"> {{ threadDetails.num_comments }}\n          </div>\n        </div>\n      </div>\n\n      <div class=\"col-12\">\n        <hr />\n        <p class='thread-text' [innerHTML]=\"threadDetails.selftext_html\"></p>\n      </div>\n    </div> \n \n    <div class=\"row\" *ngFor=\"let comment of comments\">\n      <app-thread-detail-comment></app-thread-detail-comment>\n    </div>\n  </div>  \n</div> \n"
+module.exports = "<div class='thread-overlay' *ngIf=\"threadDetails\">\n  <div class=\"container\">\n    <div class=\"row pt-4 pb-4\">\n      <div class=\"col-12\">\n        <h3>{{ threadDetails.title }}</h3>\n      </div>\n      <div class=\"col-12\">\n        <div class=\"row\">\n          <div class=\"col-1\">\n            <img src=\"/assets/svg/arrow-thick-left.svg\" class='arrow-icon icon' (click)=\"close()\"/>\n          </div>\n          <div class=\"col-2\">\n            <img src=\"/assets/svg/comment-square.svg\" class='comment-icon icon' alt=\"\"> {{ threadDetails.num_comments }}\n          </div>\n          <div class=\"col-1\">\n            <img src=\"/assets/svg/loop-circular.svg\" alt=\"\" class='refresh-icon icon' (click)=\"refreshFeed()\"/>\n          </div>\n          <div class=\"col-6\"></div>\n          <div class=\"col-1\">\n            <img src=\"/assets/svg/fullscreen-exit.svg\" alt=\"\" class=\"collapse-icon icon\" (click)=\"toggleText()\">\n          </div>\n          <div class=\"col-1\">\n            <img src=\"/assets/svg/arrow-thick-right.svg\" class='arrow-icon icon' (click)=\"redirect('http://old.reddit.com/' + threadDetails.permalink)\" />\n          </div>\n        </div>\n      </div>\n     \n      <div class=\"media col-12\" *ngIf=\"threadDetails.media\">\n        <div class=\"row span-row\">\n          <app-thread-media class=\"col-12\" [media]=\"threadDetails.media\"></app-thread-media>\n        </div>        \n      </div>\n\n      <div class=\"col-12\" *ngIf=\"threadDetails.selftext_html\">\n        <hr />\n        <p class='thread-text' *ngIf=\"! collapsed\" [innerHTML]=\"threadDetails.selftext_html\"></p>\n      </div>\n    </div>   \n   \n    <div class=\"row\" *ngFor=\"let comment of comments\">\n      <app-thread-detail-comment class='col-12' [data]=\"comment.data\"></app-thread-detail-comment>\n    </div>\n  </div>  \n</div> \n"
 
 /***/ }),
 
@@ -540,15 +670,34 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 var ThreadDetailsComponent = /** @class */ (function () {
     function ThreadDetailsComponent(redditService) {
         this.redditService = redditService;
+        this.collapsed = false;
     }
-    ThreadDetailsComponent.prototype.ngOnInit = function () {
+    ThreadDetailsComponent.prototype.redirect = function (link) {
+        window.open(link);
+    };
+    ThreadDetailsComponent.prototype.refreshFeed = function () {
+        this.load();
+    };
+    ThreadDetailsComponent.prototype.toggleText = function () {
+        this.collapsed = !this.collapsed;
+    };
+    ThreadDetailsComponent.prototype.load = function () {
         var _this = this;
         this.redditService.getThreadDetails(this.sub, this.id).subscribe(function (response) {
             _this.fullData = JSON.parse(response.toString());
             _this.threadDetails = _this.fullData[0].data.children[0].data;
+            if (_this.threadDetails.url.includes("twitter.com")) {
+                _this.threadDetails.media = {
+                    type: "twitter.com",
+                    url: _this.threadDetails.url
+                };
+            }
             console.log(_this.threadDetails);
             _this.comments = _this.fullData[1].data.children;
         });
+    };
+    ThreadDetailsComponent.prototype.ngOnInit = function () {
+        this.load();
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
@@ -577,6 +726,167 @@ var ThreadDetailsComponent = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/thread-media/thread-media.component.css":
+/*!*********************************************************!*\
+  !*** ./src/app/thread-media/thread-media.component.css ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ""
+
+/***/ }),
+
+/***/ "./src/app/thread-media/thread-media.component.html":
+/*!**********************************************************!*\
+  !*** ./src/app/thread-media/thread-media.component.html ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"col-12\">\n  <hr />\n    <div *ngIf=\"media.type === 'streamable.com'\" [innerHTML]=\"embed\"></div>\n    <app-twitter *ngIf=\"media.type === 'twitter.com'\" [url]=\"embed\"></app-twitter>\n  <hr />\n</div> "
+
+/***/ }),
+
+/***/ "./src/app/thread-media/thread-media.component.ts":
+/*!********************************************************!*\
+  !*** ./src/app/thread-media/thread-media.component.ts ***!
+  \********************************************************/
+/*! exports provided: ThreadMediaComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ThreadMediaComponent", function() { return ThreadMediaComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var ThreadMediaComponent = /** @class */ (function () {
+    function ThreadMediaComponent(sanitizer) {
+        this.sanitizer = sanitizer;
+    }
+    ThreadMediaComponent.prototype.ngOnInit = function () {
+        console.log(this.media);
+        switch (this.media.type) {
+            case "streamable.com":
+                this.embed = this.sanitizer.bypassSecurityTrustHtml(this.media.oembed.html.replace("width=\"600\"", "width=\"1200\"").replace("height=\"338\"", "height=\"676\""));
+                break;
+            case "twitter.com":
+                this.embed = this.media.url.replace("mobile.", '');
+                break;
+        }
+    };
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Object)
+    ], ThreadMediaComponent.prototype, "media", void 0);
+    ThreadMediaComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-thread-media',
+            template: __webpack_require__(/*! ./thread-media.component.html */ "./src/app/thread-media/thread-media.component.html"),
+            styles: [__webpack_require__(/*! ./thread-media.component.css */ "./src/app/thread-media/thread-media.component.css")]
+        }),
+        __metadata("design:paramtypes", [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["DomSanitizer"]])
+    ], ThreadMediaComponent);
+    return ThreadMediaComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/thread-media/twitter/twitter.component.css":
+/*!************************************************************!*\
+  !*** ./src/app/thread-media/twitter/twitter.component.css ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ""
+
+/***/ }),
+
+/***/ "./src/app/thread-media/twitter/twitter.component.html":
+/*!*************************************************************!*\
+  !*** ./src/app/thread-media/twitter/twitter.component.html ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<div *ngIf=\"embed\" [innerHTML]=\"embedHtml\"></div>"
+
+/***/ }),
+
+/***/ "./src/app/thread-media/twitter/twitter.component.ts":
+/*!***********************************************************!*\
+  !*** ./src/app/thread-media/twitter/twitter.component.ts ***!
+  \***********************************************************/
+/*! exports provided: TwitterComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TwitterComponent", function() { return TwitterComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _twitter_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../twitter.service */ "./src/app/twitter.service.ts");
+/* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+var TwitterComponent = /** @class */ (function () {
+    function TwitterComponent(twitterService, sanitizer) {
+        this.twitterService = twitterService;
+        this.sanitizer = sanitizer;
+    }
+    TwitterComponent.prototype.ngOnInit = function () {
+        this.fetch();
+    };
+    TwitterComponent.prototype.fetch = function () {
+        var _this = this;
+        this.twitterService.fetchTweet(this.url).subscribe(function (data) {
+            _this.embed = JSON.parse(data);
+            _this.embedHtml = _this.sanitizer.bypassSecurityTrustHtml(_this.embed.html);
+        });
+    };
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", String)
+    ], TwitterComponent.prototype, "url", void 0);
+    TwitterComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-twitter',
+            template: __webpack_require__(/*! ./twitter.component.html */ "./src/app/thread-media/twitter/twitter.component.html"),
+            styles: [__webpack_require__(/*! ./twitter.component.css */ "./src/app/thread-media/twitter/twitter.component.css")]
+        }),
+        __metadata("design:paramtypes", [_twitter_service__WEBPACK_IMPORTED_MODULE_1__["TwitterService"],
+            _angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__["DomSanitizer"]])
+    ], TwitterComponent);
+    return TwitterComponent;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/thread/thread.component.css":
 /*!*********************************************!*\
   !*** ./src/app/thread/thread.component.css ***!
@@ -584,7 +894,7 @@ var ThreadDetailsComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".icon{\n    margin-right: 10px;\n    height: 15px;\n}\n\np{\n    font-size: 14px;\n    line-height: 22px;\n    font-weight: light;\n    background-color: #efefef;\n    padding: 12px;\n}"
+module.exports = ".icon{\n    margin-right: 10px;\n    height: 15px;\n}\n\nh6{\n    padding-left: 60px;\n    padding-right: 80px;\n    position: relative;\n}\n\n.fixed-left{\n    position: absolute;\n    left: 0;\n    top: 0;\n}\n\n.fixed-right{\n    position: absolute;\n    right: 0;\n    top: 0;\n}\n\np{\n    font-size: 14px;\n    line-height: 22px;\n    font-weight: light;\n    background-color: #efefef;\n    padding: 12px;\n}"
 
 /***/ }),
 
@@ -595,7 +905,7 @@ module.exports = ".icon{\n    margin-right: 10px;\n    height: 15px;\n}\n\np{\n 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h6>\n  <img *ngIf=\"! textVisible\" class='icon expand-icon' src=\"/assets/svg/arrow-bottom.svg\" alt=\"\" (click)=\"toggleText()\" />\n  <img *ngIf=\"textVisible\" class='icon expand-icon' src=\"/assets/svg/arrow-top.svg\" alt=\"\" (click)=\"toggleText()\" />\n\n<a (click)=\"getThread()\">{{ data.title }}\n  <span class='float-right'>({{data.num_comments}})</span>\n</a>\n\n</h6>\n<p *ngIf=\"textVisible\" [innerHTML]=\"data.selftext_html\"></p>       \n\n<div *ngIf=\"threadVisible\">\n    <app-thread-details [id]=\"data.id\" [sub]=\"data.subreddit\" [close]=\"passableClose\" ></app-thread-details>\n</div>     "
+module.exports = "<h6>\n    <img *ngIf=\"! textVisible\" class='icon expand-icon fixed-left' src=\"/assets/svg/arrow-bottom.svg\" alt=\"\" (click)=\"toggleText()\" />\n    <img *ngIf=\"textVisible\" class='icon expand-icon fixed-left' src=\"/assets/svg/arrow-top.svg\" alt=\"\" (click)=\"toggleText()\" />\n\n    <a (click)=\"getThread()\">{{ data.title }}\n        <span class='fixed-right'>({{data.num_comments}})</span>\n    </a>\n\n</h6>\n<p *ngIf=\"textVisible\" [innerHTML]=\"data.selftext_html\"></p>       \n\n<div *ngIf=\"threadVisible\">\n    <app-thread-details [id]=\"data.id\" [sub]=\"data.subreddit\" [close]=\"passableClose\" ></app-thread-details>\n</div>     "
 
 /***/ }),
 
@@ -626,6 +936,7 @@ var ThreadComponent = /** @class */ (function () {
         this.threadVisible = false;
     }
     ThreadComponent.prototype.ngOnInit = function () {
+        //console.log(this.data);
         this.passableClose = this.closeThread.bind(this);
     };
     ThreadComponent.prototype.closeThread = function () {
@@ -650,6 +961,50 @@ var ThreadComponent = /** @class */ (function () {
         __metadata("design:paramtypes", [])
     ], ThreadComponent);
     return ThreadComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/twitter.service.ts":
+/*!************************************!*\
+  !*** ./src/app/twitter.service.ts ***!
+  \************************************/
+/*! exports provided: TwitterService */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TwitterService", function() { return TwitterService; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var TwitterService = /** @class */ (function () {
+    function TwitterService(http) {
+        this.http = http;
+        this.baseUrl = "/twitter/";
+    }
+    TwitterService.prototype.fetchTweet = function (url) {
+        return this.http.get(this.baseUrl + "?url=" + url);
+    };
+    TwitterService = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
+            providedIn: 'root'
+        }),
+        __metadata("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"]])
+    ], TwitterService);
+    return TwitterService;
 }());
 
 

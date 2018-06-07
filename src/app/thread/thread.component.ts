@@ -6,6 +6,7 @@ import { RedditService } from '../reddit.service';
   templateUrl: './thread.component.html',
   styleUrls: ['./thread.component.css']
 })
+
 export class ThreadComponent implements OnInit {
   @Input() data: {
     title: String,
@@ -20,9 +21,11 @@ export class ThreadComponent implements OnInit {
   threadVisible: boolean = false;
   passableClose: any;
 
-  constructor() { }
+  constructor() {  }
 
   ngOnInit() {
+    //console.log(this.data);
+
     this.passableClose = this.closeThread.bind(this);
   }
 

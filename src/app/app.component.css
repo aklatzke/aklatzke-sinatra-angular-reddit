@@ -1,3 +1,25 @@
 .nav-link{
     cursor: pointer;
 }
+
+.preloader{
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.side-nav{
+    position: relative;
+}
+
+.fixed-nav{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    width: 16.666667%;
+    padding-left: 15px;
+    padding-right: 15px;
+}

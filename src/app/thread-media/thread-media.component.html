@@ -1,0 +1,6 @@
+<div class="col-12">
+  <hr />
+    <div *ngIf="media.type === 'streamable.com'" [innerHTML]="embed"></div>
+    <app-twitter *ngIf="media.type === 'twitter.com'" [url]="embed"></app-twitter>
+  <hr />
+</div> 

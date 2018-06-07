@@ -52,7 +52,6 @@ get "/api/subreddits/:name/hot" do
 
     if reddit
         response = reddit.client.get("/r/#{params['name']}/hot")
-        puts response
         json response.raw_body
     else
         json false
@@ -78,6 +77,37 @@ get "/api/subreddits/unsubscribe/:name" do
     } )
 end
 
-get "/api/subreddits/:sub/:id" do
+get "/api/subreddits/specific/:sub/:id" do
     json redditGet("/r/#{params['sub']}/comments/#{params['id']}")
+end
+
+get "/api/subreddits/front" do
+    json redditGet("/");
+end 
+
+get "/api/subreddits/load/:sub/:after" do
+    if params[:sub] === "front"
+        json redditGet("/", {
+            after: params[:after],
+            limit: 25
+        })        
+    else
+        json redditGet("/r/#{params['sub']}/hot", {
+            after: params[:after],
+            limit: 25
+        })        
+    end
+end
+
+get "/api/subreddits/comments/:id" do
+    options = {
+        api_type: "json",
+        children: params[:children],
+        limit_children: false,
+        link_id: params[:id],
+        sort: "top",
+        showmore: true
+    }
+
+    json redditGet("/api/morechildren", options)
 end

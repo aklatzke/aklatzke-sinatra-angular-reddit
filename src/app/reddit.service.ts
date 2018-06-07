@@ -41,6 +41,18 @@ export class RedditService {
   }
 
   getThreadDetails(sub, id){
-    return this.http.get(`${this.subredditUrl}${sub}/${id}`);
+    return this.http.get(`${this.subredditUrl}specific/${sub}/${id}`);
+  }
+
+  getFrontPage(){
+    return this.http.get(`${this.subredditUrl}front`);
+  }
+
+  loadMore(sub, page){
+    return this.http.get(`${this.subredditUrl}load/${sub}/${page}`);
+  }
+
+  loadMoreComments(linkId, children){
+    return this.http.get(`${this.subredditUrl}comments/${linkId}?children=${children.join(",")}`);
   }
 }

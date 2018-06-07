@@ -12,24 +12,54 @@ export class ThreadDetailsComponent implements OnInit {
 
   private fullData : Object;
   threadDetails: {
-    title : String,
-    num_comments: Number,
-    selftext_html: String
+    title : string,
+    num_comments: number,
+    selftext_html: string,
+    permalink: string,
+    media: object,
+    url: string
   };
-  comments: Object[];
+
+  comments: [{
+    data : Object[]
+  }];
+
+  collapsed : boolean = false;
 
   constructor(
     private redditService : RedditService
   ) { }
 
-  ngOnInit() {
+  redirect(link){
+    window.open(link);
+  }
+
+  refreshFeed(){
+    this.load();
+  }
+
+  toggleText(){
+    this.collapsed = ! this.collapsed;
+  }
+
+  load(){
     this.redditService.getThreadDetails(this.sub, this.id).subscribe(response => {
       this.fullData = JSON.parse(response.toString());
 
       this.threadDetails = this.fullData[0].data.children[0].data;
-
+      
+      if( this.threadDetails.url.includes("twitter.com") ){
+        this.threadDetails.media = {
+          type: "twitter.com",
+          url: this.threadDetails.url
+        }
+      }
       console.log(this.threadDetails);
       this.comments = this.fullData[1].data.children;
     })
+  }
+
+  ngOnInit() {
+    this.load();
   }
 }

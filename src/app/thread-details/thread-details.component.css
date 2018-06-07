@@ -6,6 +6,8 @@
     left: 10%;
     background-color: rgba(255, 255, 255, .95);
     overflow-y: scroll;
+    z-index: 999;
+    border-left: 2px solid rgba(0,0,0,.5);
 }
 
 .icon{
@@ -14,10 +16,27 @@
 }
 
 .thread-text{
-    font-size: 14px;
-    line-height: 22px;
+    font-size: 16px;
+    line-height: 24px;
+    border-bottom: 1px solid #cdcdcd;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
 
 .arrow-icon {
   width: 24px;
+  cursor: pointer;
+}
+
+.collapse-icon{
+    width: 24px;
+    cursor: pointer;
+}
+
+.refresh-icon{
+    width: 24px;
+}
+
+.span-row{
+    width: 100%;
 }

@@ -1,0 +1,50 @@
+[class*=depth]{
+    padding-left: 10px;
+    border-left: 2px solid #333;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.depth-0{
+    border-left: 4px solid #333;
+    margin-bottom: 10px;
+    background-color: rgba(100, 100, 100, .05);
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.comment{
+    font-size: 14px;
+    line-height: 22px;
+    width: 100%;
+    position: relative;
+    padding-right: 85px;
+}
+
+.comment p{ 
+    margin-bottom: 0px;
+}
+
+.comment .comment{
+    position: static;
+}
+
+.fixed-right{
+    position: absolute;
+    right: 15px;
+}
+
+.collapse{
+    cursor: pointer;
+    width: 14px;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.collapse-expand{
+    top: 4px;
+}
+
+.load-more-comment{
+    cursor: pointer;
+}

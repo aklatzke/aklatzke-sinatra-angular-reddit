@@ -23,3 +23,4 @@ use Redd::Middleware,
 require_relative 'routes/main'
 require_relative 'routes/auth'
 require_relative 'routes/reddit' 
+require_relative 'routes/twitter'

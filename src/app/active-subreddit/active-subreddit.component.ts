@@ -9,23 +9,26 @@ import { RedditService } from "../reddit.service";
 
 export class ActiveSubredditComponent implements OnInit {
   @Input() activeSub : {
-    children : {
-      data: object[],
-      type: string
-    }[]
+    after: string,
+    children : any
   };
 
   @Input() refresh;
+  @Input() refreshActive : () => void;
   @Input() activeSubName: string;
   @Input() isSubscribed: boolean;
+
+  currentAfter : string;
 
   constructor(
     private redditService: RedditService
   ) { }
 
-  ngOnInit() {
+  ngOnInit() { 
     console.log(this.activeSub)
-  }
+
+    this.currentAfter = this.activeSub.after;
+  } 
 
   subscribe(){
     this.redditService.subscribe(this.activeSubName).subscribe(response => this.refresh())
@@ -33,5 +36,14 @@ export class ActiveSubredditComponent implements OnInit {
 
   unsubscribe(){
     this.redditService.unsubscribe(this.activeSubName).subscribe(response => this.refresh())
+  }
+
+  loadMore(){
+    this.redditService.loadMore(this.activeSubName, this.currentAfter).subscribe(response => {
+      let data = JSON.parse(response.toString()).data;
+      let newChildren = data.children
+      this.currentAfter = data.after;
+      this.activeSub.children = this.activeSub.children.concat(newChildren);
+    })
   }
 }

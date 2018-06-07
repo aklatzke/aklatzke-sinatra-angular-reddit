@@ -1,30 +1,32 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-2 pt-2">
-      <h5>Welcome {{activeUser}}</h5> 
-      <app-subreddit-search
-        [setActive]="passableGetSpecificSubreddit"
-      ></app-subreddit-search>
-      <hr /> 
-      <h6>Your Subreddits</h6>
-      <ul class='nav nav-pills flex-column'>
-          <a class='nav-link' 
-              *ngFor="let subs of subreddits" 
-              (click)="getSpecificSubreddit(subs.data.display_name)"
-              [class.active]="subs.data.display_name === activeSubName"
-          >
+    <div class="col-2 pt-4 side-nav">
+      <div class="fixed-nav pt-4">
+        <h5>Welcome {{activeUser}}</h5>
+        <app-subreddit-search [setActive]="passableGetSpecificSubreddit"></app-subreddit-search>
+        <hr />
+        <h6>Your Subreddits</h6>
+        <ul class='nav nav-pills flex-column'>
+          <a class="nav-link" (click)="loadFrontPage()" [class.active]="activeSubName === 'front'">Front Page</a>
+          <a class='nav-link' *ngFor="let subs of subreddits" (click)="getSpecificSubreddit(subs.data.display_name)" [class.active]="subs.data.display_name === activeSubName">
             {{ subs.data.display_name }}
           </a>
-      </ul>
+        </ul>
+      </div>
     </div> 
-    <div class="col-10 pl-5 pr-5 pt-2" *ngIf="activeSub">
+    <div class="col-10 pl-5 pr-5 pt-4" *ngIf="activeSub">
       <app-active-subreddit 
         [activeSub]="activeSub" 
         [activeSubName]="activeSubName"
         [isSubscribed]="subscribedToActive"
         [refresh]="passableRefresh"
+        [refreshActive]="passableGetSpecificSubreddit"
       >
       </app-active-subreddit>
-    </div>    
+    </div>      
+
+    <div class="col-10" *ngIf="!activeSub">
+      <img class='preloader' src="/assets/preloader.gif" alt="" />
+    </div>
   </div>
-</div> 
+</div>   

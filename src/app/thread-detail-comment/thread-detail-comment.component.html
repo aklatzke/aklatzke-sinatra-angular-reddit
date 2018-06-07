@@ -1,3 +1,33 @@
-<p>
-  thread-detail-comment works!
-</p>
+<div class='comment depth-{{data.depth}}' *ngIf="! collapsed">
+  <strong *ngIf="data.author">{{ data.author }}</strong>
+  <strong *ngIf="!data.author">[deleted]</strong>
+
+  <div class="fixed-right">
+    <img class='collapse' src="/assets/svg/fullscreen-exit.svg" alt="" (click)="collapse()">
+
+    <span *ngIf="data.score">[{{data.score}}]</span>
+    <span *ngIf="!data.score">[-]</span>
+  </div>
+
+  <p *ngIf="!data.body_html">[deleted]</p>
+  <p *ngIf="data.body_html" [innerHTML]="data.body_html"></p>
+
+  <div class='comment-children' *ngIf="data.replies !== undefined">
+    <div *ngIf="data.replies">
+      <div *ngFor="let child of data.replies.data.children">
+        <app-thread-detail-comment *ngIf="child.kind !== 'more'" [data]="child.data"></app-thread-detail-comment>
+        <app-thread-detail-more *ngIf="child.kind === 'more'" [loadMore]="passableLoadMore" [data]="child.data"></app-thread-detail-more>
+      </div>
+    </div> 
+  </div> 
+</div>
+
+<div class='comment depth-{{data.depth}}' *ngIf="collapsed">
+  <strong *ngIf="data.author">
+    <em>[hidden]</em>
+  </strong>
+
+  <div class="fixed-right collapse-expand">
+    <img class='collapse' src="/assets/svg/fullscreen-enter.svg" alt="" (click)="collapse()">
+  </div>
+</div>

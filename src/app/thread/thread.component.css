@@ -3,6 +3,24 @@
     height: 15px;
 }
 
+h6{
+    padding-left: 60px;
+    padding-right: 80px;
+    position: relative;
+}
+
+.fixed-left{
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.fixed-right{
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
 p{
     font-size: 14px;
     line-height: 22px;

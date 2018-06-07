@@ -10,3 +10,4 @@ gem "sinatra-contrib"
 gem "bundler"
 gem 'redd'
 gem 'sinatra-cors'
+gem 'http'

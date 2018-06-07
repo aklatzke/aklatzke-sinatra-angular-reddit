@@ -1,6 +1,6 @@
 <div class='thread-overlay' *ngIf="threadDetails">
   <div class="container">
-    <div class="row pt-4">
+    <div class="row pt-4 pb-4">
       <div class="col-12">
         <h3>{{ threadDetails.title }}</h3>
       </div>
@@ -9,20 +9,36 @@
           <div class="col-1">
             <img src="/assets/svg/arrow-thick-left.svg" class='arrow-icon icon' (click)="close()"/>
           </div>
-          <div class="col-1">
+          <div class="col-2">
             <img src="/assets/svg/comment-square.svg" class='comment-icon icon' alt=""> {{ threadDetails.num_comments }}
+          </div>
+          <div class="col-1">
+            <img src="/assets/svg/loop-circular.svg" alt="" class='refresh-icon icon' (click)="refreshFeed()"/>
+          </div>
+          <div class="col-6"></div>
+          <div class="col-1">
+            <img src="/assets/svg/fullscreen-exit.svg" alt="" class="collapse-icon icon" (click)="toggleText()">
+          </div>
+          <div class="col-1">
+            <img src="/assets/svg/arrow-thick-right.svg" class='arrow-icon icon' (click)="redirect('http://old.reddit.com/' + threadDetails.permalink)" />
           </div>
         </div>
       </div>
-
-      <div class="col-12">
-        <hr />
-        <p class='thread-text' [innerHTML]="threadDetails.selftext_html"></p>
+     
+      <div class="media col-12" *ngIf="threadDetails.media">
+        <div class="row span-row">
+          <app-thread-media class="col-12" [media]="threadDetails.media"></app-thread-media>
+        </div>        
       </div>
-    </div> 
- 
+
+      <div class="col-12" *ngIf="threadDetails.selftext_html">
+        <hr />
+        <p class='thread-text' *ngIf="! collapsed" [innerHTML]="threadDetails.selftext_html"></p>
+      </div>
+    </div>   
+   
     <div class="row" *ngFor="let comment of comments">
-      <app-thread-detail-comment></app-thread-detail-comment>
+      <app-thread-detail-comment class='col-12' [data]="comment.data"></app-thread-detail-comment>
     </div>
   </div>  
 </div> 
