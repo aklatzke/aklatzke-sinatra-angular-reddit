@@ -23,6 +23,7 @@ export class AppComponent {
   subscribedToActive : boolean = false;
   passableGetSpecificSubreddit : any;
   passableRefresh : any;
+  activeType: string;
 
   constructor(
     private userService : UserService,
@@ -55,11 +56,12 @@ export class AppComponent {
     })
   }
 
-  getSpecificSubreddit(name) : void{
+  getSpecificSubreddit(name, type='hot') : void{
     this.activeSubName = name;
     this.activeSub = null;
+    this.activeType = type;
 
-    this.redditService.getSubredditDefault(name).subscribe((response: Response) => {
+    this.redditService.getSubredditDefault(name, type).subscribe((response: Response) => {
       this.activeSub = JSON.parse(response.toString()).data;
       this.subscribedToActive = this.subreddits.some(sub => sub.data.display_name === name);
     })

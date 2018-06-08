@@ -14,9 +14,10 @@ export class ActiveSubredditComponent implements OnInit {
   };
 
   @Input() refresh;
-  @Input() refreshActive : () => void;
+  @Input() refreshActive : (subName: string, type: string) => void;
   @Input() activeSubName: string;
   @Input() isSubscribed: boolean;
+  @Input() dataType: string;
 
   currentAfter : string;
 
@@ -36,8 +37,14 @@ export class ActiveSubredditComponent implements OnInit {
     this.redditService.unsubscribe(this.activeSubName).subscribe(response => this.refresh())
   }
 
+  changeSubListing( type: string ){
+    this.dataType = type;
+
+    this.refreshActive(this.activeSubName, type);
+  }
+
   loadMore(){
-    this.redditService.loadMore(this.activeSubName, this.currentAfter).subscribe(response => {
+    this.redditService.loadMore(this.activeSubName, this.currentAfter, this.dataType).subscribe(response => {
       let data = JSON.parse(response.toString()).data;
       let newChildren = data.children
       this.currentAfter = data.after;

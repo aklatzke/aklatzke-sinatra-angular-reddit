@@ -17,9 +17,11 @@
 
   <div class='comment-children' *ngIf="data.replies !== undefined">
     <div *ngIf="data.replies">
-      <div *ngFor="let child of data.replies.data.children">
-        <app-thread-detail-comment *ngIf="child.kind !== 'more'" [data]="child.data"></app-thread-detail-comment>
-        <app-thread-detail-more *ngIf="child.kind === 'more'" [loadMore]="passableLoadMore" [data]="child.data"></app-thread-detail-more>
+      <div *ngIf="data.replies.data">
+        <div *ngFor="let child of data.replies.data.children">
+          <app-thread-detail-comment *ngIf="child.kind !== 'more'" [data]="child.data"></app-thread-detail-comment>
+          <app-thread-detail-more *ngIf="child.kind === 'more'" [loadMore]="passableLoadMore" [data]="child.data"></app-thread-detail-more>
+        </div>
       </div>
     </div> 
   </div> 

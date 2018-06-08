@@ -47,12 +47,28 @@ get "/api/subreddits/" do
     end
 end
 
-get "/api/subreddits/:name/hot" do
+get "/api/subreddits/:sub/:type" do
     reddit = request.env["redd.session"]
 
     if reddit
-        response = reddit.client.get("/r/#{params['name']}/hot")
-        json response.raw_body
+        case params[:type]
+            when "rising"
+                json redditGet("/r/#{params['sub']}/rising", {
+                    limit: 25
+                })
+            when "controversial"
+                json redditGet("/r/#{params['sub']}/controversial", {
+                    limit: 25
+                })
+            when "new"
+                json redditGet("/r/#{params['sub']}/new", {
+                    limit: 25
+                })
+            else
+                json redditGet("/r/#{params['sub']}/hot", {
+                    limit: 25
+                })
+        end 
     else
         json false
     end
@@ -85,17 +101,35 @@ get "/api/subreddits/front" do
     json redditGet("/");
 end 
 
-get "/api/subreddits/load/:sub/:after" do
+get "/api/subreddits/load/:sub/:after/:type?" do
     if params[:sub] === "front"
         json redditGet("/", {
             after: params[:after],
             limit: 25
         })        
     else
-        json redditGet("/r/#{params['sub']}/hot", {
-            after: params[:after],
-            limit: 25
-        })        
+        case params[:type]
+            when "rising"
+                json redditGet("/r/#{params['sub']}/rising", {
+                    after: params[:after],
+                    limit: 25
+                })
+            when "controversial"
+                json redditGet("/r/#{params['sub']}/controversial", {
+                    after: params[:after],
+                    limit: 25
+                })
+            when "new"
+                json redditGet("/r/#{params['sub']}/new", {
+                    after: params[:after],
+                    limit: 25
+                })
+            else
+                json redditGet("/r/#{params['sub']}/hot", {
+                    after: params[:after],
+                    limit: 25
+                })
+        end 
     end
 end
 
@@ -106,7 +140,8 @@ get "/api/subreddits/comments/:id" do
         limit_children: false,
         link_id: params[:id],
         sort: "top",
-        showmore: true
+        showmore: true,
+        threaded: true
     }
 
     json redditGet("/api/morechildren", options)

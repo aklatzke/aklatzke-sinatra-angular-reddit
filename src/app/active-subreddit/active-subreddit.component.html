@@ -7,6 +7,23 @@
   ><img src="/assets/svg/loop-circular.svg" alt=""></button>
   <button *ngIf="isSubscribed" class='btn btn-primary btn-sm' (click)="unsubscribe()">Unsubscribe</button>
   <button *ngIf="! isSubscribed" class='btn btn-primary btn-sm' (click)="subscribe()">Subscribe</button>
+
+  <div class="float-right">
+    <div class="btn-group">
+      <button class="btn btn-outline-secondary" [class.active]="dataType === 'hot'" (click)="changeSubListing('hot')">
+        Hot
+      </button>
+      <button class="btn btn-outline-secondary" [class.active]="dataType === 'rising'"  (click)="changeSubListing('rising')">
+        Rising
+      </button>
+      <button class="btn btn-outline-secondary" [class.active]="dataType === 'controversial'"  (click)="changeSubListing('controversial')">
+        Controversial
+      </button>
+      <button class="btn btn-outline-secondary" [class.active]="dataType === 'new'" (click)="changeSubListing('new')">
+        New
+      </button>
+    </div>
+  </div>
 </div>
 <hr />
  

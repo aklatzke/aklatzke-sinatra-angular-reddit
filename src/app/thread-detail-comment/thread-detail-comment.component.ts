@@ -41,7 +41,10 @@ export class ThreadDetailCommentComponent implements OnInit {
     this.redditService.loadMoreComments(this.data.link_id, children).subscribe((data : any) => {
       data = JSON.parse(data).json;
       if( data.data ){
-        data = data.data.things;
+        // The comments returned from the morecomments API do not comply
+        // with the ones we originally received - the service has a method to make them comply.
+        data = this.redditService.processCommentTree(data.data.things);
+        // console.log(this.data.replies.data.children, data);
         this.data.replies.data.children.pop()
         this.data.replies.data.children = this.data.replies.data.children.concat(data)
       }

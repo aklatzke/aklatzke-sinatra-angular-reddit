@@ -12,8 +12,5 @@ export class ThreadDetailCommentFlairComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-    console.log(this.data);
-  }
-
+  ngOnInit() {}
 }

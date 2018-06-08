@@ -7,6 +7,8 @@ h6{
     padding-left: 60px;
     padding-right: 80px;
     position: relative;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .fixed-left{
@@ -27,4 +29,8 @@ p{
     font-weight: light;
     background-color: #efefef;
     padding: 12px;
+}
+
+h6 a{
+    font-weight: 300;
 }

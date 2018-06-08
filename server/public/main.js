@@ -30,7 +30,7 @@ webpackEmptyAsyncContext.id = "./src/$$_lazy_route_resource lazy recursive";
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".thread-list{\n    padding-left: 0px;\n    list-style-type: none;\n}\n\n.thread-list li{\n    margin-bottom: 10px;\n    cursor: pointer;\n}\n\n.refresh-button img{\n    width: 20px;\n}"
+module.exports = ".thread-list{\n    padding-left: 0px;\n    list-style-type: none;\n}\n\n.thread-list li{\n    margin-bottom: 10px;\n    cursor: pointer;\n}\n\n.refresh-button img{\n    width: 20px;\n}\n\na{\n    font-weight: light;\n}"
 
 /***/ }),
 
@@ -41,7 +41,7 @@ module.exports = ".thread-list{\n    padding-left: 0px;\n    list-style-type: no
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h4>r/{{ activeSubName }}</h4>\n<hr />\n<div class='subredditActions'>\n  <button \n    class=\"btn btn-sm mr-2 refresh-button btn-outline-secondary\" \n    (click)=\"refreshActive(activeSubName)\"\n  ><img src=\"/assets/svg/loop-circular.svg\" alt=\"\"></button>\n  <button *ngIf=\"isSubscribed\" class='btn btn-primary btn-sm' (click)=\"unsubscribe()\">Unsubscribe</button>\n  <button *ngIf=\"! isSubscribed\" class='btn btn-primary btn-sm' (click)=\"subscribe()\">Subscribe</button>\n</div>\n<hr />\n \n<ul class=\"thread-list\" *ngIf=\"activeSub.children\">\n  <li *ngFor=\"let thread of activeSub.children\" class=\"mt-2\">\n    <app-thread [data]=\"thread.data\"></app-thread>\n  </li>\n</ul>   \n\n<div class=\"row mt-5 mb-5\">\n  <div class=\"col-12\">\n    <button class=\"btn btn-outline-secondary btn-block\" (click)=\"loadMore()\">LOAD MORE</button>\n  </div>\n</div>\n \n "
+module.exports = "<h4>r/{{ activeSubName }}</h4>\n<hr />\n<div class='subredditActions'>\n  <button \n    class=\"btn btn-sm mr-2 refresh-button btn-outline-secondary\" \n    (click)=\"refreshActive(activeSubName)\"\n  ><img src=\"/assets/svg/loop-circular.svg\" alt=\"\"></button>\n  <button *ngIf=\"isSubscribed\" class='btn btn-primary btn-sm' (click)=\"unsubscribe()\">Unsubscribe</button>\n  <button *ngIf=\"! isSubscribed\" class='btn btn-primary btn-sm' (click)=\"subscribe()\">Subscribe</button>\n\n  <div class=\"float-right\">\n    <div class=\"btn-group\">\n      <button class=\"btn btn-outline-secondary\" [class.active]=\"dataType === 'hot'\" (click)=\"changeSubListing('hot')\">\n        Hot\n      </button>\n      <button class=\"btn btn-outline-secondary\" [class.active]=\"dataType === 'rising'\"  (click)=\"changeSubListing('rising')\">\n        Rising\n      </button>\n      <button class=\"btn btn-outline-secondary\" [class.active]=\"dataType === 'controversial'\"  (click)=\"changeSubListing('controversial')\">\n        Controversial\n      </button>\n      <button class=\"btn btn-outline-secondary\" [class.active]=\"dataType === 'new'\" (click)=\"changeSubListing('new')\">\n        New\n      </button>\n    </div>\n  </div>\n</div>\n<hr />\n \n<ul class=\"thread-list\" *ngIf=\"activeSub.children\">\n  <li *ngFor=\"let thread of activeSub.children\" class=\"mt-2\">\n    <app-thread [data]=\"thread.data\"></app-thread>\n  </li>\n</ul>   \n\n<div class=\"row mt-5 mb-5\">\n  <div class=\"col-12\">\n    <button class=\"btn btn-outline-secondary btn-block\" (click)=\"loadMore()\">LOAD MORE</button>\n  </div>\n</div>\n \n "
 
 /***/ }),
 
@@ -83,9 +83,13 @@ var ActiveSubredditComponent = /** @class */ (function () {
         var _this = this;
         this.redditService.unsubscribe(this.activeSubName).subscribe(function (response) { return _this.refresh(); });
     };
+    ActiveSubredditComponent.prototype.changeSubListing = function (type) {
+        this.dataType = type;
+        this.refreshActive(this.activeSubName, type);
+    };
     ActiveSubredditComponent.prototype.loadMore = function () {
         var _this = this;
-        this.redditService.loadMore(this.activeSubName, this.currentAfter).subscribe(function (response) {
+        this.redditService.loadMore(this.activeSubName, this.currentAfter, this.dataType).subscribe(function (response) {
             var data = JSON.parse(response.toString()).data;
             var newChildren = data.children;
             _this.currentAfter = data.after;
@@ -112,6 +116,10 @@ var ActiveSubredditComponent = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
         __metadata("design:type", Boolean)
     ], ActiveSubredditComponent.prototype, "isSubscribed", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", String)
+    ], ActiveSubredditComponent.prototype, "dataType", void 0);
     ActiveSubredditComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-active-subreddit',
@@ -145,7 +153,7 @@ module.exports = ".nav-link{\n    cursor: pointer;\n}\n\n.preloader{\n    positi
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container-fluid\">\n  <div class=\"row\">\n    <div class=\"col-2 pt-4 side-nav\">\n      <div class=\"fixed-nav pt-4\">\n        <h5>Welcome {{activeUser}}</h5>\n        <app-subreddit-search [setActive]=\"passableGetSpecificSubreddit\"></app-subreddit-search>\n        <hr />\n        <h6>Your Subreddits</h6>\n        <ul class='nav nav-pills flex-column'>\n          <a class=\"nav-link\" (click)=\"loadFrontPage()\" [class.active]=\"activeSubName === 'front'\">Front Page</a>\n          <a class='nav-link' *ngFor=\"let subs of subreddits\" (click)=\"getSpecificSubreddit(subs.data.display_name)\" [class.active]=\"subs.data.display_name === activeSubName\">\n            {{ subs.data.display_name }}\n          </a>\n        </ul>\n      </div>\n    </div> \n    <div class=\"col-10 pl-5 pr-5 pt-4\" *ngIf=\"activeSub\">\n      <app-active-subreddit \n        [activeSub]=\"activeSub\" \n        [activeSubName]=\"activeSubName\"\n        [isSubscribed]=\"subscribedToActive\"\n        [refresh]=\"passableRefresh\"\n        [refreshActive]=\"passableGetSpecificSubreddit\"\n      >\n      </app-active-subreddit>\n    </div>      \n\n    <div class=\"col-10\" *ngIf=\"!activeSub\">\n      <img class='preloader' src=\"/assets/preloader.gif\" alt=\"\" />\n    </div>\n  </div>\n</div>   "
+module.exports = "<div class=\"container-fluid\">\n  <div class=\"row\">\n    <div class=\"col-2 pt-4 side-nav\">\n      <div class=\"fixed-nav pt-4\">\n        <h5>Welcome {{activeUser}}</h5>\n        <app-subreddit-search [setActive]=\"passableGetSpecificSubreddit\"></app-subreddit-search>\n        <hr />\n        <h6>Your Subreddits</h6>\n        <ul class='nav nav-pills flex-column'>\n          <a class=\"nav-link\" (click)=\"loadFrontPage()\" [class.active]=\"activeSubName === 'front'\">Front Page</a>\n          <a class='nav-link' *ngFor=\"let subs of subreddits\" (click)=\"getSpecificSubreddit(subs.data.display_name)\" [class.active]=\"subs.data.display_name === activeSubName\">\n            {{ subs.data.display_name }}\n          </a>\n        </ul>\n      </div>\n    </div> \n    <div class=\"col-10 pl-5 pr-5 pt-4\" *ngIf=\"activeSub\">\n      <app-active-subreddit \n        [activeSub]=\"activeSub\" \n        [activeSubName]=\"activeSubName\"\n        [isSubscribed]=\"subscribedToActive\"\n        [refresh]=\"passableRefresh\"\n        [refreshActive]=\"passableGetSpecificSubreddit\"\n        [dataType]=\"activeType\"\n      >\n      </app-active-subreddit>\n    </div>      \n\n    <div class=\"col-10\" *ngIf=\"!activeSub\">\n      <img class='preloader' src=\"/assets/preloader.gif\" alt=\"\" />\n    </div>\n  </div>\n</div>   "
 
 /***/ }),
 
@@ -205,11 +213,13 @@ var AppComponent = /** @class */ (function () {
             });
         });
     };
-    AppComponent.prototype.getSpecificSubreddit = function (name) {
+    AppComponent.prototype.getSpecificSubreddit = function (name, type) {
         var _this = this;
+        if (type === void 0) { type = 'hot'; }
         this.activeSubName = name;
         this.activeSub = null;
-        this.redditService.getSubredditDefault(name).subscribe(function (response) {
+        this.activeType = type;
+        this.redditService.getSubredditDefault(name, type).subscribe(function (response) {
             _this.activeSub = JSON.parse(response.toString()).data;
             _this.subscribedToActive = _this.subreddits.some(function (sub) { return sub.data.display_name === name; });
         });
@@ -345,9 +355,10 @@ var RedditService = /** @class */ (function () {
     RedditService.prototype.getSubbreddits = function () {
         return this.http.get(this.subredditUrl);
     };
-    RedditService.prototype.getSubredditDefault = function (sub) {
+    RedditService.prototype.getSubredditDefault = function (sub, type) {
+        if (type === void 0) { type = 'hot'; }
         this.activeSubName = sub;
-        return this.http.get(this.subredditUrl + (sub + "/hot"));
+        return this.http.get(this.subredditUrl + (sub + "/" + type));
     };
     RedditService.prototype.getActiveSubName = function () {
         return this.activeSubName;
@@ -367,11 +378,55 @@ var RedditService = /** @class */ (function () {
     RedditService.prototype.getFrontPage = function () {
         return this.http.get(this.subredditUrl + "front");
     };
-    RedditService.prototype.loadMore = function (sub, page) {
-        return this.http.get(this.subredditUrl + "load/" + sub + "/" + page);
+    RedditService.prototype.loadMore = function (sub, page, type) {
+        if (type === void 0) { type = 'hot'; }
+        return this.http.get(this.subredditUrl + "load/" + sub + "/" + page + "/" + type);
     };
     RedditService.prototype.loadMoreComments = function (linkId, children) {
         return this.http.get(this.subredditUrl + "comments/" + linkId + "?children=" + children.join(","));
+    };
+    /*
+      Convert a comment tree provided by the /morecomments/ api into an object that
+      complies with the same signature as the OTHER API calls for threads, e.g. taking a flat object
+      and turning it into one where the parent comment's children are a member of its object
+    */
+    RedditService.prototype.processCommentTree = function (comments) {
+        var map = {};
+        comments.map(function (item) {
+            item.key = item.kind + "_" + item.data.id;
+            item.parentKey = item.data.parent_id;
+            map[item.key] = item;
+        });
+        // Reversing here means we're processing from the nested ones up,
+        // meaning we won't have to worry about comments being popped off the 
+        // chain that shouldn't be
+        comments.reverse().forEach(function (item, idx, arr) {
+            var foundItem;
+            if (map[item.parentKey]) {
+                foundItem = map[item.parentKey];
+                if (!Array.isArray(foundItem.data.replies)) {
+                    foundItem.data.replies = [];
+                }
+                foundItem.data.replies.push(item);
+                map[item.parentKey] = foundItem;
+                delete map[item.key];
+            }
+        });
+        comments = Object.keys(map)
+            .map(function (key) { return map[key]; })
+            .map(function (item) {
+            var replies = item.data.replies;
+            if (replies === "")
+                return item;
+            item.data.replies = {
+                data: {
+                    children: []
+                }
+            };
+            item.data.replies.data.children = replies;
+            return item;
+        });
+        return comments;
     };
     RedditService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
@@ -513,9 +568,7 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 var ThreadDetailCommentFlairComponent = /** @class */ (function () {
     function ThreadDetailCommentFlairComponent() {
     }
-    ThreadDetailCommentFlairComponent.prototype.ngOnInit = function () {
-        console.log(this.data);
-    };
+    ThreadDetailCommentFlairComponent.prototype.ngOnInit = function () { };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
         __metadata("design:type", String)
@@ -542,7 +595,7 @@ var ThreadDetailCommentFlairComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "[class*=depth]{\n    padding-left: 10px;\n    border-left: 2px solid #333;\n    padding-top: 4px;\n    padding-bottom: 4px;\n}\n\n.depth-0{\n    border-left: 4px solid #333;\n    margin-bottom: 10px;\n    background-color: rgba(100, 100, 100, .05);\n    padding-left: 15px;\n    padding-right: 15px;\n}\n\n.comment{\n    font-size: 14px;\n    line-height: 22px;\n    width: 100%;\n    position: relative;\n    padding-right: 85px;\n}\n\n.comment p{ \n    margin-bottom: 0px;\n}\n\n.comment .comment{\n    position: static;\n}\n\n.fixed-right{\n    position: absolute;\n    right: 15px;\n}\n\n.collapse{\n    cursor: pointer;\n    width: 14px;\n    display: inline-block;\n    margin-right: 8px;\n}\n\n.collapse-expand{\n    top: 4px;\n}\n\n.load-more-comment{\n    cursor: pointer;\n}\n\n.depth-1{\n    border-color: rgba(123, 12, 184, 1);\n}\n\n.depth-2{\n    border-color: rgba(12, 123, 184, 1);\n}"
+module.exports = "[class*=depth]{\n    padding-left: 10px;\n    border-left: 2px solid #333;\n    padding-top: 4px;\n    padding-bottom: 4px;\n\n}\n\n.depth-0{\n    border-left: 4px solid #333;\n    margin-bottom: 10px;\n    background-color: rgba(100, 100, 100, .05);\n    padding-left: 15px;\n    padding-right: 15px;\n}\n\n.comment{\n    font-size: 14px;\n    line-height: 22px;\n    width: 100%;\n    position: relative;\n    padding-right: 85px;\n}\n\n.comment p{ \n    margin-bottom: 0px;\n}\n\n.comment .comment{\n    position: static;\n}\n\n.fixed-right{\n    position: absolute;\n    right: 15px;\n}\n\n.collapse{\n    cursor: pointer;\n    width: 14px;\n    display: inline-block;\n    margin-right: 8px;\n}\n\n.collapse-expand{\n    top: 4px;\n}\n\n.load-more-comment{\n    cursor: pointer;\n}\n\n.depth-1{\n    border-color: rgba(123, 12, 184, 1);\n}\n\n.depth-2{\n    border-color: rgba(12, 123, 184, 1);\n}\n\n.comment-children > .depth-2{\n    padding-left: 20px\n}\n\n.comment-children>.depth-2 {\n  padding-left: 30px\n}\n\n.comment-children>.depth-3 {\n  padding-left: 40px\n}\n\n"
 
 /***/ }),
 
@@ -553,7 +606,7 @@ module.exports = "[class*=depth]{\n    padding-left: 10px;\n    border-left: 2px
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class='comment depth-{{data.depth}}' *ngIf=\"! collapsed\">\n  <strong *ngIf=\"data.author\">\n    {{ data.author }} \n    <app-thread-detail-comment-flair *ngIf=\"data.author_flair_text\" [data]=\"data.author_flair_text\"></app-thread-detail-comment-flair>\n  </strong>\n  <strong *ngIf=\"!data.author\">[deleted]</strong>\n\n  <div class=\"fixed-right\">\n    <img class='collapse' src=\"/assets/svg/fullscreen-exit.svg\" alt=\"\" (click)=\"collapse()\">\n\n    <span *ngIf=\"data.score\">[{{data.score}}]</span>\n    <span *ngIf=\"!data.score\">[-]</span>\n  </div>\n\n  <p *ngIf=\"!data.body_html\">[deleted]</p>\n  <p *ngIf=\"data.body_html\" [innerHTML]=\"data.body_html\"></p>\n\n  <div class='comment-children' *ngIf=\"data.replies !== undefined\">\n    <div *ngIf=\"data.replies\">\n      <div *ngFor=\"let child of data.replies.data.children\">\n        <app-thread-detail-comment *ngIf=\"child.kind !== 'more'\" [data]=\"child.data\"></app-thread-detail-comment>\n        <app-thread-detail-more *ngIf=\"child.kind === 'more'\" [loadMore]=\"passableLoadMore\" [data]=\"child.data\"></app-thread-detail-more>\n      </div>\n    </div> \n  </div> \n</div>\n\n<div class='comment depth-{{data.depth}}' *ngIf=\"collapsed\">\n  <strong *ngIf=\"data.author\">\n    <em>[hidden]</em>\n  </strong>\n\n  <div class=\"fixed-right collapse-expand\">\n    <img class='collapse' src=\"/assets/svg/fullscreen-enter.svg\" alt=\"\" (click)=\"collapse()\">\n  </div>\n</div>\n"
+module.exports = "<div class='comment depth-{{data.depth}}' *ngIf=\"! collapsed\">\n  <strong *ngIf=\"data.author\">\n    {{ data.author }} \n    <app-thread-detail-comment-flair *ngIf=\"data.author_flair_text\" [data]=\"data.author_flair_text\"></app-thread-detail-comment-flair>\n  </strong>\n  <strong *ngIf=\"!data.author\">[deleted]</strong>\n\n  <div class=\"fixed-right\">\n    <img class='collapse' src=\"/assets/svg/fullscreen-exit.svg\" alt=\"\" (click)=\"collapse()\">\n\n    <span *ngIf=\"data.score\">[{{data.score}}]</span>\n    <span *ngIf=\"!data.score\">[-]</span>\n  </div>\n\n  <p *ngIf=\"!data.body_html\">[deleted]</p>\n  <p *ngIf=\"data.body_html\" [innerHTML]=\"data.body_html\"></p>\n\n  <div class='comment-children' *ngIf=\"data.replies !== undefined\">\n    <div *ngIf=\"data.replies\">\n      <div *ngIf=\"data.replies.data\">\n        <div *ngFor=\"let child of data.replies.data.children\">\n          <app-thread-detail-comment *ngIf=\"child.kind !== 'more'\" [data]=\"child.data\"></app-thread-detail-comment>\n          <app-thread-detail-more *ngIf=\"child.kind === 'more'\" [loadMore]=\"passableLoadMore\" [data]=\"child.data\"></app-thread-detail-more>\n        </div>\n      </div>\n    </div> \n  </div> \n</div>\n\n<div class='comment depth-{{data.depth}}' *ngIf=\"collapsed\">\n  <strong *ngIf=\"data.author\">\n    <em>[hidden]</em>\n  </strong>\n\n  <div class=\"fixed-right collapse-expand\">\n    <img class='collapse' src=\"/assets/svg/fullscreen-enter.svg\" alt=\"\" (click)=\"collapse()\">\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -596,7 +649,10 @@ var ThreadDetailCommentComponent = /** @class */ (function () {
         this.redditService.loadMoreComments(this.data.link_id, children).subscribe(function (data) {
             data = JSON.parse(data).json;
             if (data.data) {
-                data = data.data.things;
+                // The comments returned from the morecomments API do not comply
+                // with the ones we originally received - the service has a method to make them comply.
+                data = _this.redditService.processCommentTree(data.data.things);
+                // console.log(this.data.replies.data.children, data);
                 _this.data.replies.data.children.pop();
                 _this.data.replies.data.children = _this.data.replies.data.children.concat(data);
             }
@@ -963,7 +1019,7 @@ var TwitterComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".icon{\n    margin-right: 10px;\n    height: 15px;\n}\n\nh6{\n    padding-left: 60px;\n    padding-right: 80px;\n    position: relative;\n}\n\n.fixed-left{\n    position: absolute;\n    left: 0;\n    top: 0;\n}\n\n.fixed-right{\n    position: absolute;\n    right: 0;\n    top: 0;\n}\n\np{\n    font-size: 14px;\n    line-height: 22px;\n    font-weight: light;\n    background-color: #efefef;\n    padding: 12px;\n}"
+module.exports = ".icon{\n    margin-right: 10px;\n    height: 15px;\n}\n\nh6{\n    padding-left: 60px;\n    padding-right: 80px;\n    position: relative;\n    margin-top: 5px;\n    margin-bottom: 5px;\n}\n\n.fixed-left{\n    position: absolute;\n    left: 0;\n    top: 0;\n}\n\n.fixed-right{\n    position: absolute;\n    right: 0;\n    top: 0;\n}\n\np{\n    font-size: 14px;\n    line-height: 22px;\n    font-weight: light;\n    background-color: #efefef;\n    padding: 12px;\n}\n\nh6 a{\n    font-weight: 300;\n}"
 
 /***/ }),
 
